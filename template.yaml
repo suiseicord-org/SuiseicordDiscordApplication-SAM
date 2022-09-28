@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SuiseiCord_Discord_SAM
+
+  SuiseiCord Main Discord Applications
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+
+Parameters:
+  DiscordToken:
+    Description: Discord Token. Must be prefixed with 'Bot' or 'Bearer'.
+    Type: String
+    NoEcho: true
+  ApplicationID:
+    Description: Discord Application ID (Client ID)
+    Type: String
+  ApplicationPublicKey:
+    Description: Discord Application Public Key
+    Type: String
+  LoggingMode:
+    Description: Logging Mode 'DEBUG' or 'INFO'
+    Type: String
+
+Resources:
+  SuiseiCordDiscordApplicationCommandsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: LambdaFunction/
+      Handler: app.callback
+      Runtime: python3.9
+      Events:
+        CallbackApi:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /callback
+            Method: POST
+      Environment:
+        Variables:
+          DISCORD_TOKEN: !Ref DiscordToken
+          APPLICATION_ID: !Ref ApplicationID
+          APPLICATION_PUBLIC_KEY: !Ref ApplicationPublicKey
+          LOGGING_MODE: !Ref LoggingMode
+
+#Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  #CallbackAPIEndpoint:
+    #Description: "API Gateway endpoint URL"
+    #Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/callback"

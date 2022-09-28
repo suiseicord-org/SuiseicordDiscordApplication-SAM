@@ -1,0 +1,14 @@
+入金報告を受け付けました！
+Your payment report has been submitted successfully. 
+```
+金額 (Amount) : {amount}
+{title} : {name}
+```
+企画主催者が入金を確認しています。
+確認完了まで3日程度かかる場合があります。ご了承ください。
+
+We are verifying your payment.
+Your order is being processed. As soon as we have confirmed that the correct payment has been made, we will send you a confirmation message.
+
+※自動送信メッセージ
+*This is an automated message
