@@ -1,10 +1,32 @@
 #!python3.9
-
 import datetime
+from typing import (
+    overload,
+    Optional
+)
 
 from .mytypes.snowflake import Snowflake
 
 DISCORD_EPOCH = 1420070400000
+
+
+@overload
+def parse_time(timestamp: None) -> None:
+    ...
+
+@overload
+def parse_time(timestamp: str) -> datetime.datetime:
+    ...
+
+@overload
+def parse_time(timestamp: Optional[str]) -> Optional[datetime.datetime]:
+    ...
+
+def parse_time(timestamp: Optional[str]) -> Optional[datetime.datetime]:
+    if timestamp:
+        return datetime.datetime.fromisoformat(timestamp)
+    return None
+
 
 def snowflake_time(id: Snowflake) -> datetime.datetime:
     """

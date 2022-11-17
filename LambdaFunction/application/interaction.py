@@ -2,34 +2,45 @@
 import requests
 from typing import (
     Any,
+    Callable,
     Optional,
     overload,
     Union
 )
 from datetime import datetime
 
-from .enums import (
+from application.enums import (
     InteractionType,
     InteractionResponseType
 )
-from .utils import (
+from application.utils import (
     snowflake_time
 )
 
-from .mytypes.snowflake import Snowflake
-from .mytypes.interaction import (
+from application.mytypes.snowflake import Snowflake
+from application.mytypes.interaction import (
     ApplicationCommandInteractionData,
     ApplicationCommandInteractionDataOption,
 )
-from .mytypes.user import (
-    User as UserPayload,
+from application.mytypes.user import (
     PartialUser as PartiaUserPayload
 )
+from application.mytypes.permissions import (
+    ApplicationCommandPermissions as ApplicationCommandPermissionsPayload,
+    ApplicationCommandPermissionsList as ApplicationCommandPermissionsListPayload,
+    GuildApplicationCommandPermissionsList as GuildApplicationCommandPermissionsListPayload
+)
 
-from .discord import ApiBaseUrl
-from .discord.channel import Channel
-from .discord.member import PartiaMember, Member
-from .discord.user import PartiaUser, User
+from application.enums import (
+    ApplicationCommandPermissionType as ACPT,
+    MessageFlags
+)
+from application.components import CustomID
+from application.discord import ApiBaseUrl
+from application.discord.channel import Channel
+from application.discord.member import Member
+from application.discord.user import PartiaUser, User
+
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -50,12 +61,25 @@ class Interaction:
             self._guild_id: Optional[Snowflake] = rawdata.get('guild_id')
             self._channel_id: Snowflake         = rawdata['channel_id']
             self.channel: Channel               = Channel(bot_token, self._channel_id)
-            self.commander = PartiaMember(d) if (d := rawdata.get("member")) is not None else PartiaUser(rawdata["user"])
+            self.commander = Member(d, self._guild_id) \
+                if (d := rawdata.get("member")) is not None else User(rawdata["user"])
             self.locale: str                    = rawdata['locale']
             self.guild_locale: Optional[str]    = rawdata.get('guild_locale')
 
-        self._bot_token: str                = bot_token
+        self._bot_token: str            = bot_token
+
+        self._deferred: bool            = False
+
+        # override
+        self.custom_id: str = self._data.get("custom_id", "")
         
+    @overload
+    def check(self) -> bool:
+        """Check the Command Permissions
+        super().check is later.
+        If using run(), callback DEFERRED_ response.
+        """
+        ...
 
     @overload
     def run(self) -> None:
@@ -123,29 +147,45 @@ class Interaction:
         _log.debug("response: {}".format(res.text))
         return res
     
-    def deferred_channel_message(self) -> requests.Response:
-        url = self.interaction_url + "/callback"
+    def deferred_channel_message(self) -> Optional[requests.Response]:
+        if self._deferred:
+            _log.info("Already deferred.")
+            return None
+
         payload: dict = {
-            "type" : InteractionResponseType.deferred_channel_message
+            "type" : InteractionResponseType.deferred_channel_message.value
         }
-        res: requests.Response = requests.post(url, json=payload)
+        res: requests.Response = self.callback(payload)
         _log.debug("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
+
+        self._deferred = True
+
         return res
     
-    def deferred_update_message(self) -> requests.Response:
-        url = self.interaction_url + "/callback"
+    def deferred_update_message(self) -> Optional[requests.Response]:
+        if self._deferred:
+            _log.info("Already deferred.")
+            return None
+
         payload: dict = {
-            "type" : InteractionResponseType.deferred_message_update
+            "type" : InteractionResponseType.deferred_message_update.value
         }
-        res: requests.Response = requests.post(url, json=payload)
+        res: requests.Response = self.callback(payload)
         _log.debug("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
+
+        self._deferred = True
+
         return res
 
 
     def get_user(self) -> Optional[PartiaUser]:
         user_payload: Optional[PartiaUserPayload] = self._data
+
+
+    def check(self) -> bool:
+        return True
 
     
     def run(self) -> None:
@@ -163,6 +203,180 @@ class Interaction:
     
     def clean(self) -> None:
         pass
+
+    
+    def check_permission(
+        self,
+        defferd_func: Optional[Callable[[], Optional[requests.Response]]] = None
+    ) -> bool:
+        """
+        Check the component's user has command permission.
+        if user CAN use command, return ture.
+        else, return false
+        """
+        parse_data: list[str] = self.custom_id.strip('-')
+        _log.debug(f"{str(parse_data)}")
+        if len(parse_data) < 2:
+            return False
+        permission_type: str = parse_data[-2]
+        target_id: str       = parse_data[-1]
+        _log.debug(f"permission_type: {permission_type}")
+        _log.debug(f"target_id: {target_id}")
+
+        if permission_type == CustomID.PermissionType.all:
+            return True
+        if permission_type == CustomID.PermissionType.user:
+            if target_id == str(self.commander.id):
+                return True
+            else:
+                return False
+        if permission_type == CustomID.PermissionType.command:
+            # need API requests.
+            # defferd.
+            if defferd_func is not None:
+                defferd_func()
+            return self.__check_command_permission(target_id)
+    
+    def __check_command_permission(self, command_id: str) -> bool:
+        acp: Optional[ApplicationCommandPermissionsListPayload] = self.get_permission(command_id)
+        _log.debug(f"command_id: {command_id}")
+        _log.debug(f"acp: {str(acp)}")
+
+        if acp is None:
+            return False
+        
+        acp: ApplicationCommandPermissionsListPayload = acp
+        
+        role_permissions: dict[str, str] = {}
+        user_permissions: dict[str, str] = {}
+
+        permission: ApplicationCommandPermissionsPayload
+        for permission in acp:
+            acpt: ACPT == ACPT(permission["id"])
+            if acpt == ACPT.role:
+                role_permissions[permission["id"]] = permission["permission"]
+            elif acpt == ACPT.user:
+                user_permissions[permission["id"]] = permission["permission"]
+        
+        _log.debug(f"user_permissions: {str(user_permissions)}")
+        if user_permissions.get(str(self.commander.id), False):
+            return True
+        
+        if isinstance(self.commander, User):
+            # DM
+            return True
+        
+        for r_id in self.commander._role_ids:
+            perm: Optional[bool] = role_permissions.get(str(r_id))
+            if perm is None:
+                continue
+            else:
+                return perm
+        return role_permissions.get(str(self._guild_id), False)
+
+
+    def get_permission(self, command_id: str) -> Optional[ApplicationCommandPermissionsListPayload]:
+        guild_acp = Optional[ApplicationCommandPermissionsListPayload] = None
+
+        results: Optional[GuildApplicationCommandPermissionsListPayload] = self.get_ACP()
+
+        guild_id = str(self._guild_id)
+        for acp in results:
+            _id = str(acp["id"])
+            if command_id == _id:
+                return acp
+            elif _id == guild_id:
+                guild_acp = acp
+
+        return guild_acp
+
+    def get_ACP(self) -> Optional[GuildApplicationCommandPermissionsListPayload]:
+        url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions'
+        headers = {
+            "Authorization": f"Bot {self._bot_token}"
+        }
+
+        r: requests.Response = requests.get(url, headers=headers)
+
+        if r.status_code == requests.codes.ok:
+            _log.debug(url)
+            _log.debug(str(r.status_code))
+            _log.debug(r.text)
+            return r.json()
+        else:
+            _log.warn(url)
+            _log.warn(str(r.status_code))
+            _log.warn(r.text)
+            return None
+
+# import asyncio, aiohttp
+# import json
+#
+#     def get_permissions(self, command_id: str) -> Optional[ApplicationCommandPermissionsPayload]:
+#         loop = asyncio.get_event_loop()
+#         tasks = asyncio.gather(
+#             self.get_guild_ACP(command_id),
+#             self.get_ACP()
+#         )
+#         results: list[Optional[GuildApplicationCommandPermissionsPayload]] = loop.run_until_complete(tasks)
+#
+#         for res in results:
+#             if res is not None:
+#                 return res["permissions"]
+#         return None
+#
+#     async def get_guild_ACP(self, command_id: str) -> Optional[GuildApplicationCommandPermissionsPayload]:
+#         url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/{command_id}/permissions'
+#         headers = {
+#             "Authorization": f"Bot {self._bot_token}"
+#         }
+#
+#         async with aiohttp.ClientSession() as session:
+#             async with session.get(url, headers=headers) as resp:
+#                 if resp.ok:
+#                     text = await resp.text(encoding='utf-8')
+#                     _log.info("Retrieves this command's permission.")
+#                     _log.debug(f"{text}")
+#                     return json.loads(text)[0]
+#                 elif resp.status == requests.codes.not_found:
+#                     _log.info("The application command's permissions could not be found. (Unchanged from the default)")
+#                     return None
+#                 else:
+#                     text = await resp.text(encoding='utf-8')
+#                     _log.error(f"HTTP Error; command id: {command_id}; guild id: {self._guild_id};")
+#                     _log.error(f"HTTP Error; {text}")
+#                     return None
+#
+#     async def get_ACP(self) -> Optional[GuildApplicationCommandPermissionsPayload]:
+#         url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions'
+#         headers = {
+#             "Authorization": f"Bot {self._bot_token}"
+#         }
+#
+#         async with aiohttp.ClientSession() as session:
+#             async with session.get(url, headers=headers) as resp:
+#                 if resp.ok:
+#                     text = await resp.text(encoding='utf-8')
+#                     _log.info("Retrieves this command's permission.")
+#                     _log.debug(f"{text}")
+#                     return json.loads(text)[0]
+#                 else:
+#                     text = await resp.text(encoding='utf-8')
+#                     _log.error(f"HTTP Error; command id: guild id: {self._guild_id};")
+#                     _log.error(f"HTTP Error; {text}")
+#                     resp.raise_for_status()
+#                     return None
+
+    # no permission
+    def no_permission(self) -> None:
+        _log.debug("no_permission")
+        payload: dict = {
+            "content" : "この操作を実行する権限がありません。\nYou do not have permission to run this command.",
+            "flags" : MessageFlags.ephemeral.value,
+        }
+        r: requests.Response = self.followup(payload)
+        _log.debug(str(r.status_code))
+        _log.debug(r.text)
 
     def run_error(self, res: requests.Response, **options) -> bool:
         if res.status_code == requests.codes.ok:
@@ -195,6 +409,16 @@ class Interaction:
         _log.error(res.text)
         return False
     
+    # Error
+    def error(self) -> dict:
+        return {
+            "type" : InteractionResponseType.channel_message.value,
+            "data" : {
+                "content" : "ERROR;\nPlease report bot operator or server admins."
+            }
+        }
+
+    # Test
     def print_response(self, res: requests.Response):
         print("status code: ", res.status_code)
         print(res.text)

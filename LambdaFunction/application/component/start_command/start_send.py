@@ -1,8 +1,9 @@
 #!python3.9
 import json
 import requests
-from .start_command import CmpStartCommand
 from datetime import datetime
+
+from .start_command import CmpStartCommand
 
 from application.utils import isotimestamp
 from application.commands import (
@@ -26,6 +27,9 @@ class CmpStartSend(CmpStartCommand):
         _commands: list[str] = self.custom_id.split('-')
         self.sub_command:str = _commands[2]
         self.target_id: Snowflake = _commands[3]
+
+    def check(self) -> bool:
+        return self.check_permission(defferd_func=self.deferred_update_message)
 
     def run(self) -> None:
         """メッセージ送信"""

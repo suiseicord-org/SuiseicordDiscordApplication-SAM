@@ -241,6 +241,9 @@ class Channel:
             "Authorization": f"Bot {self.bot_token}"
         }
         r = requests.get(url, headers=headers)
+        _log.debug(url)
+        _log.debug(str(r.status_code))
+        _log.debug(r.text)
 
         if r.status_code == requests.codes.ok:
             return r.json()

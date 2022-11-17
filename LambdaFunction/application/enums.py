@@ -571,6 +571,12 @@ class SuiseiCordColor(Enum):
         return self.value
 
 
+class ApplicationCommandPermissionType(Enum):
+    role    = 1
+    user    = 2
+    channel = 3
+
+
 T = TypeVar('T')
 
 def create_unknown_value(cls: Type[T], val: Any) -> T:

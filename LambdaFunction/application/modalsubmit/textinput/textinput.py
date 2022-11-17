@@ -9,6 +9,9 @@ class ModalTextInput(ModalSubmit):
     def __init__(self, rawdata: dict, bot_token: str):
         super().__init__(rawdata, bot_token)
         self.message_data: dict = rawdata["message"]
+
+    def check(self) -> bool:
+        return super().check()
     
     def run(self) -> None:
         super().run()

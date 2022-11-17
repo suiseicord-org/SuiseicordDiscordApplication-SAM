@@ -37,13 +37,21 @@ class SlashSend(SlashCommand):
         )
         self.target_id: Snowflake = _targets[0]['value']
 
-        self._input_custom_id: str = CustomID.modal_send.format(
-            sub_command = self.sub_command_name.lower(),
-            target = self.target_id,
+        self._input_custom_id: str = CustomID.set_permission(
+            CustomID.modal_send.format(
+                sub_command = self.sub_command_name.lower(),
+                target = self.target_id
+            ),
+            CustomID.PermissionType.command,
+            self.id
         )
-        self._start_custom_id: str = CustomID.start_send.format(
-            sub_command = self.sub_command_name.lower(),
-            target = self.target_id,
+        self._start_custom_id: str = CustomID.set_permission(
+            CustomID.start_send.format(
+                sub_command = self.sub_command_name.lower(),
+                target = self.target_id,
+            ),
+            CustomID.PermissionType.command,
+            self.id
         )
     
     def run(self) -> None:
@@ -74,7 +82,10 @@ class SlashSend(SlashCommand):
                                 "label" : "Start (送信)",
                                 "custom_id" : self._start_custom_id
                             },
-                            Button.cansell
+                            Button.cansell(
+                                CustomID.PermissionType.command,
+                                self.id
+                            )
                         ]
                     }
                 ]

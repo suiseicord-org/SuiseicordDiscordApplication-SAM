@@ -21,11 +21,11 @@ def from_data(rawdata: dict, bot_token: str) -> Component:
         _log.debug("command == CommandsName.cancel")
         return CmpCommandCancel(rawdata, bot_token)
     elif command == CommandsName.start:
-        _log.debug("ccommand == CommandsName.start")
+        _log.debug("command == CommandsName.start")
         return csc_from_data(rawdata, bot_token)
     elif command == CommandsName.modal:
         _log.debug("command == CommandsName.modal")
         return ccm_from_data(rawdata, bot_token)
-    elif command == CommandsName.happi:
-        _log.debug("command == CommandsName.happi")
-        return csh_from_data(rawdata, bot_token)
+    # elif command == CommandsName.happi:
+    #     _log.debug("command == CommandsName.happi")
+    #     return csh_from_data(rawdata, bot_token)

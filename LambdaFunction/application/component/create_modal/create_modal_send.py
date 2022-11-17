@@ -18,6 +18,10 @@ class CreateModalSend(CmpCreateModal):
     def __init__(self, rawdata: dict, bot_token: str):
         super().__init__(rawdata, bot_token)
     
+    def check(self) -> bool:
+        _log.debug("check()")
+        return self.check_permission(self.deferred_channel_message)
+
     def run(self) -> None:
         super().run()
         return

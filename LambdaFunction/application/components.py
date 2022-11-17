@@ -1,11 +1,11 @@
 #!python3.9
 
-from .enums import (
+from application.enums import (
     ComponentType,
     ButtonStyle,
 )
 
-from .commands import (
+from application.commands import (
     Commands as CommandsName,
     SlashCommand as SlashCommandName,
     HappiCommand as HappiCOmmandName,
@@ -27,10 +27,26 @@ class CustomID:
     happi_announce_jp: str = f'{CommandsName.happi}-{HappiCOmmandName.announce}-{HappiAnnounceLanguage.jp}'
     happi_announce_en: str = f'{CommandsName.happi}-{HappiCOmmandName.announce}-{HappiAnnounceLanguage.en}'
 
+    class PermissionType:
+        command = 'cmd'
+        user    = 'usr'
+        all     = 'all'
+
+    @classmethod
+    def set_permission(cls, target: str, _type: str, _id: int) -> str:
+        return target + f'-{_type}-{str(_id)}'
+
 class Button:
-    cansell: dict = {
-        "type" : ComponentType.button.value,
-        "style" : ButtonStyle.danger.value,
-        "label" : "Cancel (中止)",
-        "custom_id" : CustomID.cansell
-    }
+    
+    @classmethod
+    def cansell(cls, permission_type: str, permission_id: int) -> dict:
+        return {
+            "type" : ComponentType.button.value,
+            "style" : ButtonStyle.danger.value,
+            "label" : "Cancel (中止)",
+            "custom_id" : CustomID.set_permission(
+                CustomID.cansell,
+                permission_type,
+                permission_id
+            ) 
+        }

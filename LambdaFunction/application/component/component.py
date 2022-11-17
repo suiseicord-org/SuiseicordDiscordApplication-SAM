@@ -1,4 +1,7 @@
 #!python3.9
+from typing import (
+    Optional
+)
 
 from ..interaction import Interaction
 
@@ -8,8 +11,10 @@ _log = getLogger(__name__)
 class Component(Interaction):
     def __init__(self, rawdata: dict, bot_token: str):
         super().__init__(rawdata, bot_token)
-        self.custom_id: str = self._data["custom_id"]
         self.message_data: dict = rawdata["message"]
+
+    def check(self) -> bool:
+        return self.check_permission()
 
     def run(self) -> None:
         super().run()

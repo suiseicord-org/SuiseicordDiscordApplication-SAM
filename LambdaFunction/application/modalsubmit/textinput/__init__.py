@@ -19,6 +19,6 @@ def from_data(rawdata: dict, bot_token: str) -> ModalTextInput:
     if sub_command == TextinputSubCommandName.send:
         _log.debug("sub_command == TextinputSubCommandName.send")
         return TextInputSend(rawdata, bot_token)
-    elif sub_command == TextinputSubCommandName.happi:
-        _log.debug("sub_command == TextinputSubCommandName.happi")
-        return tsh_from_data(rawdata, bot_token)
+    # elif sub_command == TextinputSubCommandName.happi:
+    #     _log.debug("sub_command == TextinputSubCommandName.happi")
+    #     return tsh_from_data(rawdata, bot_token)

@@ -10,6 +10,9 @@ class CmpStartCommand(Component):
         super().__init__(rawdata, bot_token)
         pass
 
+    def check(self) -> bool:
+        return super().check()
+
     def run(self) -> None:
         super().run()
         return

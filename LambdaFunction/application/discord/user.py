@@ -29,4 +29,12 @@ class PartiaUser:
 class User(PartiaUser):
     def __init__(self, payload: UserPayload):
         super().__init__(payload)
-
+        self.bot: Optional[bool] = payload.get("bot")
+        self.system: Optional[bool] = payload.get("system")
+        self.mfa_enabled: Optional[bool] = payload.get("mfa_enabled")
+        self.local: Optional[str] = payload.get("local")
+        self.verified: Optional[bool] = payload.get("verified")
+        self.email: Optional[str] = payload.get("email")
+        self.flags: Optional[int] = payload.get("flags")
+        self.premium_type: Optional[int] = payload.get("premium_type")
+        self.public_flags: Optional[int] = payload.get("public_flags")

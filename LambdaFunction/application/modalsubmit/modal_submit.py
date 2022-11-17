@@ -8,6 +8,18 @@ _log = getLogger(__name__)
 class ModalSubmit(Interaction):
     def __init__(self, rawdata: dict, bot_token: str):
         super().__init__(rawdata, bot_token)
-        self.custom_id: str = self._data["custom_id"]
         self.message_data: dict = rawdata["message"]
 
+    def check(self) -> bool:
+        return super().check() #always True?
+    
+    def run(self) -> None:
+        super().run()
+        return
+
+    def response(self) -> None:
+        super().response()
+        return 
+    
+    def clean(self) -> None:
+        return super().clean()
