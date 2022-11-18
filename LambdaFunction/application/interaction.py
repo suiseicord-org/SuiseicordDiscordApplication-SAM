@@ -131,6 +131,7 @@ class Interaction:
         res: requests.Response = requests.post(url, json=payload)
         _log.debug("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
+        print(res.text)
         return res
     
     def original_response(self, payload: dict) -> requests.Response:

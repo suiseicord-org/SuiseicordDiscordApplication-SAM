@@ -173,6 +173,7 @@ class _ComponentInteractionDataOptional(TypedDict, total=False):
 class ComponentInteractionData(_ComponentInteractionDataOptional):
     custom_id: str
     component_type: ComponentType
+    values: list[str]
 
 
 InteractionData = Union[ApplicationCommandInteractionData, ComponentInteractionData]

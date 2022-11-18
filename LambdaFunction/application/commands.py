@@ -10,6 +10,7 @@ class Commands:
     start = "start"
     modal = "modal"
     textinput = "textinput"
+    form = "form"
     
     #suiseicord happi
     happi = "happi"
@@ -38,6 +39,13 @@ class TextinputSubCommand:
     send = "send"
     # suiseicord happi
     happi = "happi"
+
+class FormCategory:
+    vsong_award = "vsongaward"
+
+
+class VSongAwardYear:
+    vsa_2022 = "2022"
 
 class HappiCommand:
     announce = "announce"

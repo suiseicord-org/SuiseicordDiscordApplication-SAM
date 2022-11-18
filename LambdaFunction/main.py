@@ -17,4 +17,5 @@ with open(fp, 'r') as f:
 config.dictConfig(_config)
 
 def lambda_function(event: dict, context: dict):
+    print(event.get('body'))
     return callback(event, context)
