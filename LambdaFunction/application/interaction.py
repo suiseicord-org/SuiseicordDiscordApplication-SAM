@@ -127,6 +127,19 @@ class Interaction:
         }
 
     def callback(self, payload: dict) -> requests.Response:
+        if not self._deferred:
+            return self.original_callback(payload)
+        else:
+            # already deferrd. 
+            irt: InteractionResponseType = InteractionResponseType(payload["type"])
+            if irt == InteractionResponseType.channel_message:
+                return self.followup(payload["data"])
+            elif irt == InteractionResponseType.message_update:
+                return self.update_callback(payload["data"])
+            else:
+                return self.followup(payload)
+    
+    def original_callback(self, payload: dict) -> requests.Response:
         url = self.interaction_url + "/callback"
         _log.info("target url: {}".format(url))
         _log.info("payload: {}".format(str(payload)))
@@ -135,9 +148,9 @@ class Interaction:
         _log.debug("response: {}".format(res.text))
         print(res.text)
         return res
-    
-    def original_response(self, payload: dict) -> requests.Response:
-        url = self.application_url + "/messages/@original"
+
+    def update_callback(self, payload: dict) -> requests.Response:
+        url = self.webhook_url + "/messages/@original"
         _log.info("target url: {}".format(url))
         _log.info("payload: {}".format(str(payload)))
         res: requests.Response = requests.patch(url, json=payload)
