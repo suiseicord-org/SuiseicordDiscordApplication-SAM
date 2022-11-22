@@ -128,36 +128,42 @@ class Interaction:
 
     def callback(self, payload: dict) -> requests.Response:
         url = self.interaction_url + "/callback"
+        _log.info("target url: {}".format(url))
+        _log.info("payload: {}".format(str(payload)))
         res: requests.Response = requests.post(url, json=payload)
-        _log.debug("status code: {}".format(res.status_code))
+        _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
         print(res.text)
         return res
     
     def original_response(self, payload: dict) -> requests.Response:
         url = self.application_url + "/messages/@original"
+        _log.info("target url: {}".format(url))
+        _log.info("payload: {}".format(str(payload)))
         res: requests.Response = requests.patch(url, json=payload)
-        _log.debug("status code: {}".format(res.status_code))
+        _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
         return res
     
     def followup(self, payload: dict) -> requests.Response:
         url = self.webhook_url
+        _log.info("target url: {}".format(url))
+        _log.info("payload: {}".format(str(payload)))
         res: requests.Response = requests.post(url, json=payload)
-        _log.debug("status code: {}".format(res.status_code))
+        _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
         return res
     
     def deferred_channel_message(self) -> Optional[requests.Response]:
         if self._deferred:
-            _log.info("Already deferred.")
+            _log.warning("Already deferred.")
             return None
 
         payload: dict = {
             "type" : InteractionResponseType.deferred_channel_message.value
         }
         res: requests.Response = self.callback(payload)
-        _log.debug("status code: {}".format(res.status_code))
+        _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
 
         self._deferred = True
@@ -166,14 +172,14 @@ class Interaction:
     
     def deferred_update_message(self) -> Optional[requests.Response]:
         if self._deferred:
-            _log.info("Already deferred.")
+            _log.warning("Already deferred.")
             return None
 
         payload: dict = {
             "type" : InteractionResponseType.deferred_message_update.value
         }
         res: requests.Response = self.callback(payload)
-        _log.debug("status code: {}".format(res.status_code))
+        _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
 
         self._deferred = True
@@ -380,7 +386,7 @@ class Interaction:
         _log.debug(r.text)
 
     def run_error(self, res: requests.Response, **options) -> bool:
-        if res.status_code == requests.codes.ok:
+        if res.ok:
             # success
             return True
         # if error.
@@ -390,7 +396,7 @@ class Interaction:
         return False
     
     def response_error(self, res: requests.Response, **options) -> bool:
-        if res.status_code == requests.codes.ok:
+        if res.ok:
             # success
             return True
         # if error.
@@ -401,7 +407,7 @@ class Interaction:
     
 
     def clean_error(self, res: requests.Response, **options) -> bool:
-        if res.status_code == requests.codes.ok:
+        if res.ok:
             # success
             return True
         # if error.
