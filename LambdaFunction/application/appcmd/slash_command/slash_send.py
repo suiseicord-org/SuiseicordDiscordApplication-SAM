@@ -152,11 +152,11 @@ class SlashSend(SlashCommand):
                 )
             })
             # check send permissions
-            permission = channel.permissions
-            embed["fields"].append({
-                "name" : "送信権限",
-                "value" : "OK" if permission & 1 << 11 else "**NG (修正が必要)**"
-            })
+            # permission = channel.permissions
+            # embed["fields"].append({
+            #     "name" : "送信権限",
+            #     "value" : "OK" if permission & 1 << 11 else "**NG (修正が必要)**"
+            # })
             embed["color"] = SuiseiCordColor.admin.value
         # attachments
         attachments: Optional[dict] = self.resolved.get("attachments")
