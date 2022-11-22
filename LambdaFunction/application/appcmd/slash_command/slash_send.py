@@ -17,7 +17,9 @@ from application.components import Button, CustomID
 from application.enums import (
     InteractionResponseType,
     ComponentType,
-    ButtonStyle
+    ButtonStyle,
+    CommandColor,
+    SuiseiCordColor
 )
 from application.interaction import get_options, get_resolved_data
 from application.mytypes.snowflake import Snowflake
@@ -120,6 +122,7 @@ class SlashSend(SlashCommand):
             embed["thumbnail"] = {
                 "url" : user.avatar_url
             }
+            embed["color"] = CommandColor.mint.value
         elif self.sub_command_name.lower() == SendCommandName.channel:
             channel: InteractionPartialChannel
             channel = InteractionPartialChannel(self.resolved["channels"][self.target_id])
@@ -137,6 +140,7 @@ class SlashSend(SlashCommand):
                 "name" : "送信権限",
                 "value" : "OK" if permission & (1 << 11) else "**NG (修正が必要)**"
             })
+            embed["color"] = CommandColor.marigold.value
         elif self.sub_command_name.lower() == SendCommandName.happi:
             channel: InteractionPartialChannel
             channel = InteractionPartialChannel(self.resolved["channels"][self.target_id])
@@ -153,6 +157,7 @@ class SlashSend(SlashCommand):
                 "name" : "送信権限",
                 "value" : "OK" if permission & 1 << 11 else "**NG (修正が必要)**"
             })
+            embed["color"] = SuiseiCordColor.admin.value
         # attachments
         attachments: Optional[dict] = self.resolved.get("attachments")
         if attachments is not None:

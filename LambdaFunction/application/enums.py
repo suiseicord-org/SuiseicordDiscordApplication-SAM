@@ -11,6 +11,7 @@ from typing import (
     Type,
     TypeVar,
 )
+from unittest.result import failfast
 
 
 
@@ -565,6 +566,19 @@ class TextInputStyle(Enum):
     def __int__(self):
         return self.value
 
+
+class CommandColor(Enum):
+    cyan    = 0x00a1e9
+    blue    = 0x0000ff
+    red     = 0xbff0000
+    magenta = 0xe4007f
+    green   = 0x00ff00
+    mint    = 0x89c997
+    orange  = 0xee7800
+    marigold= 0xf39800
+    success = cyan
+    fail    = magenta
+    
 
 class SuiseiCordColor(Enum):
     hoshiyomi   = 0x00bdf1
