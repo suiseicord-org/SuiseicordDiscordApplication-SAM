@@ -13,7 +13,7 @@ if (LOGGING_MODE is not None) and (LOGGING_MODE.lower() == 'debug'):
     log_level = 10 # DEBUG
     # _log.setLevel(10) # DEBUG
 else:
-    loglevel = 20 # INFO
+    log_level = 20 # INFO
     # _log.setLevel(20) # INFO
 
 # _log.setLevel(log_level)
