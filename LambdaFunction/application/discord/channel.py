@@ -297,12 +297,12 @@ class DmChannel(Channel):
     def __init__(self, bot_token: str, user_id: Snowflake):
         self.user_id: Snowflake = user_id
         self.bot_token: str = bot_token
-        self.id = self.get_channel_id(bot_token, user_id)
+        self.id, res = self.get_channel_id(bot_token, user_id)
         if self.id is None:
-            raise NoDmChannelError
+            raise NoDmChannelError(res)
     
     @classmethod
-    def get_channel_id(cls, bot_token: str, user_id: Snowflake) ->  Optional[Snowflake]:
+    def get_channel_id(cls, bot_token: str, user_id: Snowflake) ->  tuple[Optional[Snowflake], Optional[requests.Response]]:
         url: str = ApiBaseUrl + f"/users/@me/channels"
         headers = {
             "Authorization": f"Bot {bot_token}"
@@ -311,13 +311,14 @@ class DmChannel(Channel):
             "recipient_id" : str(user_id)
         }
         r: requests.Response = requests.post(url, headers=headers, json=payload)
-        if r.status_code != requests.codes.ok:
+        if not r.ok:
             _log.warning(r.status_code)
             _log.warning(r.text)
-            return None
+            return None, r
         data: dict = r.json()
-        return data.get("id")
+        return data.get("id"), None
 
 class NoDmChannelError(Exception):
     """DMチェンネルがない時に投げる"""
-    pass
+    def __init__(self, res: requests.Response):
+        self.res = res

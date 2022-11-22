@@ -13,7 +13,8 @@ from application.components import CustomID
 from application.enums import (
     InteractionResponseType,
     ButtonStyle,
-    ComponentType
+    ComponentType,
+    CommandColor
 )
 from application.mytypes.snowflake import Snowflake
 from application.discord.channel import Channel, DmChannel, NoDmChannelError
@@ -38,7 +39,8 @@ class CmpStartSend(CmpStartCommand):
         if self.sub_command == SendCommandName.dm:
             try:
                 self.target = DmChannel(self._bot_token, self.target_id)
-            except NoDmChannelError:
+            except NoDmChannelError as e:
+                self.res: requests.Response = e.res
                 return
         else:
             self.target = Channel(self._bot_token, self.target_id)
@@ -109,7 +111,10 @@ class CmpStartSend(CmpStartCommand):
     @property
     def response_payload(self) -> dict:
         embeds = self.message_data["embeds"]
-        if self.res.status_code != requests.codes.ok:
+        if self.res.ok:
+            embeds[0]["title"] = "送信成功"
+            embeds[0]["color"] = CommandColor.success.value
+        else:
             embeds[0]["title"] = "送信失敗"
             text = json.dumps(self.res.json(), ensure_ascii=False, indent=4)
             text = text[:1000]
@@ -117,8 +122,7 @@ class CmpStartSend(CmpStartCommand):
                 "name" : "詳細",
                 "value" : f"```json\n{text}\n```"
             })
-        else:
-            embeds[0]["title"] = "送信成功"
+            embeds[0]["color"] = CommandColor.fail.value
         embeds[0]["footer"] = {
             "text" : f"started by {str(self.commander)}",
             "icon_url" : self.commander.avatar_url
