@@ -133,13 +133,12 @@ class SlashSend(SlashCommand):
                     id = channel.id
                 )
             })
-            # check send permissions
-            
-            permission = channel.permissions
-            embed["fields"].append({
-                "name" : "送信権限",
-                "value" : "OK" if permission & (1 << 11) else "**NG (修正が必要)**"
-            })
+            # # check send permissions
+            # permission = channel.permissions
+            # embed["fields"].append({
+            #     "name" : "送信権限",
+            #     "value" : "OK" if permission & (1 << 11) else "**NG (修正が必要)**"
+            # })
             embed["color"] = CommandColor.marigold.value
         elif self.sub_command_name.lower() == SendCommandName.happi:
             channel: InteractionPartialChannel

@@ -570,7 +570,7 @@ class TextInputStyle(Enum):
 class CommandColor(Enum):
     cyan    = 0x00a1e9
     blue    = 0x0000ff
-    red     = 0xbff0000
+    red     = 0xff0000
     magenta = 0xe4007f
     green   = 0x00ff00
     mint    = 0x89c997
@@ -578,6 +578,9 @@ class CommandColor(Enum):
     marigold= 0xf39800
     success = cyan
     fail    = magenta
+
+    def __int__(self):
+        return self.value
     
 
 class SuiseiCordColor(Enum):
