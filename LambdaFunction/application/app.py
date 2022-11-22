@@ -95,6 +95,7 @@ def callback(event: dict, context: dict):
                 "type" : InteractionResponseType.pong.value
             }
 
+        _log.info("from_data")
         obj: Optional[Interaction] = from_data(req, BOT_TOKEN)
         _log.debug(str(obj))
         if obj:

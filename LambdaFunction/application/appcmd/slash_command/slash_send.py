@@ -36,7 +36,7 @@ class SlashSend(SlashCommand):
             name = SendCommandOptionName.target
         )
         self.target_id: Snowflake = _targets[0]['value']
-
+        _log.debug("target_id: {}".format(self.target_id))
         self._input_custom_id: str = CustomID.set_permission(
             CustomID.modal_send.format(
                 sub_command = self.sub_command_name.lower(),
@@ -45,6 +45,7 @@ class SlashSend(SlashCommand):
             CustomID.PermissionType.command,
             self.id
         )
+        _log.debug("input_custom_id: {}".format(self._input_custom_id))
         self._start_custom_id: str = CustomID.set_permission(
             CustomID.start_send.format(
                 sub_command = self.sub_command_name.lower(),
@@ -53,6 +54,7 @@ class SlashSend(SlashCommand):
             CustomID.PermissionType.command,
             self.id
         )
+        _log.debug("start_custom_id: {}".format(self._start_custom_id))
     
     def run(self) -> None:
         super().run()
