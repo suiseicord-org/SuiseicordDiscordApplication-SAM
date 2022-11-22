@@ -58,20 +58,17 @@ def callback(event: dict, context: dict):
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
 
-    _log.debug("event:")
-    _log.debug(str(event))
+    _log.debug("event: {}".format(str(event)))
 
     headers: dict = { k.lower(): v for k, v in event['headers'].items() }
-    _log.debug("headers:")
-    _log.debug(str(headers))
+    _log.debug("headers: {}".format(str(headers)))
 
     path: str = p if (p := event.get("rawPath")) is not None else event.get("path")
     
     if path == "/callback":
         """Discord Interations"""
         rawBody: str  = event['body']
-        _log.info("rawBody:")
-        _log.info(rawBody)
+        _log.info("rawBody: {}".format(rawBody))
 
         # validate request
         signature = headers.get('x-signature-ed25519')
@@ -95,9 +92,9 @@ def callback(event: dict, context: dict):
                 "type" : InteractionResponseType.pong.value
             }
 
-        _log.info("from_data")
+        _log.debug("from_data")
         obj: Optional[Interaction] = from_data(req, BOT_TOKEN)
-        _log.debug(str(obj))
+        _log.info(str(obj))
         if obj:
             # try:
             # _log.info("check()")
@@ -105,11 +102,11 @@ def callback(event: dict, context: dict):
             #     _log.warn("no permission.")
             #     obj.no_permission()
             #     return None
-            _log.info("run()")
+            _log.debug("run()")
             obj.run()
-            _log.info("response()")
+            _log.debug("response()")
             obj.response()
-            _log.info("clean()")
+            _log.debug("clean()")
             obj.clean()
             # except Exception as e:
             #     _log.error(e)

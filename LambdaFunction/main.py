@@ -31,9 +31,5 @@ handler.setLevel(log_level)
 _log.setLevel(log_level)
 _log.addHandler(handler)
 
-print("handler", _log.handlers)
-
 def lambda_function(event: dict, context: dict):
-    # print(event.get('body'))
-    # _log.info(event.get('body'))
     return callback(event, context)
