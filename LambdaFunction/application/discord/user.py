@@ -1,5 +1,8 @@
 #!python3.9
 from typing import Optional
+import datetime
+
+from application.utils import snowflake_time
 
 from application.mytypes.snowflake import Snowflake
 from application.mytypes.user import (
@@ -14,6 +17,7 @@ _log = getLogger(__name__)
 
 class PartiaUser:
     def __init__(self, payload: PartiaUserPayload):
+        _log.debug(payload)
         self.id: Snowflake = payload["id"]
         self.name: str = payload["username"]
         self.discriminator: str = payload["discriminator"]
@@ -25,9 +29,14 @@ class PartiaUser:
     @property
     def avatar_url(self) -> str:
         return ImageBaseUrl + f"avatars/{self.id}/{self._avatar_hash}.png"
+    
+    @property
+    def created_at(self) -> datetime.datetime:
+        return snowflake_time(self.id)
 
 class User(PartiaUser):
     def __init__(self, payload: UserPayload):
+        _log.debug(payload)
         super().__init__(payload)
         self.bot: Optional[bool] = payload.get("bot")
         self.system: Optional[bool] = payload.get("system")

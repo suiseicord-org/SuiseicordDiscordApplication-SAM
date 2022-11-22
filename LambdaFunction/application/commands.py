@@ -29,6 +29,13 @@ class SendCommandOption:
     target          = 'target'
     attachments     = 'attachments'
 
+class UserCommand:
+    id      = 'id'
+    mention = 'mention'
+
+class UserCommandOption:
+    target  = 'target'
+
 class GetlogCommand:
     dm = "dm"
 
