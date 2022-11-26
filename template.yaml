@@ -24,6 +24,19 @@ Parameters:
   LoggingMode:
     Description: Logging Mode 'DEBUG' or 'INFO'
     Type: String
+  RdsHost:
+    Description: AWS RDS Instance Endpoint
+    Type: String
+  DatabaseUser:
+    Description: AWS RDS Database User Name
+    Type: String
+  DatabasePassword:
+    Description: AWS RDS Database User Password
+    Type: String
+    NoEcho: true
+  DatabaseName:
+    Description: AWS RDS Database Name
+    Type: String
 
 Resources:
   SuiseiCordDiscordApplicationCommandsFunction:
@@ -44,6 +57,10 @@ Resources:
           APPLICATION_ID: !Ref ApplicationID
           APPLICATION_PUBLIC_KEY: !Ref ApplicationPublicKey
           LOGGING_MODE: !Ref LoggingMode
+          RDS_HOST: !Ref RdsHost
+          DB_USER: !Ref DatabaseUser
+          DB_PASSWORD: !Ref DatabasePassword
+          DB_NAME: !Ref DatabaseName
 
 #Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
