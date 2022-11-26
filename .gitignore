@@ -252,3 +252,4 @@ y
 .VSCodeCounter/
 events/
 commands/
+*.env
