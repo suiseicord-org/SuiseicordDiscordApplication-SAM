@@ -10,10 +10,10 @@ from application.commands import (
 from logging import getLogger
 _log = getLogger(__name__)
 
-def from_data(rawdata: dict, bot_token: str) -> CmpCreateModal:
+def from_data(rawdata: dict) -> CmpCreateModal:
     _commands: list[str] = rawdata["data"]["custom_id"].split("-")
     command: str  = _commands[1]
     _log.debug("command: {}".format(command))
     if command == SlashCommandName.send:
         _log.debug("command == SlashCommandName.send")
-        return CreateModalSend(rawdata, bot_token)
+        return CreateModalSend(rawdata)

@@ -11,9 +11,9 @@ _log = getLogger(__name__)
 
 class CmpCommandCancel(Component):
 
-    def __init__(self, rawdata: dict, bot_token: str):
+    def __init__(self, rawdata: dict):
         _log.debug("make instance")
-        super().__init__(rawdata, bot_token)
+        super().__init__(rawdata)
     
     def check(self) -> bool:
         return self.check_permission(defferd_func=self.deferred_update_message)

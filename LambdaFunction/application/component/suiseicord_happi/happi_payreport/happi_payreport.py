@@ -6,8 +6,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class CmpHappiPayreport(CmpSuiseicordHappi):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         _commands: list[str] = self.custom_id.split("-")
         self.way = _commands[2]
         self.amount = _commands[3]

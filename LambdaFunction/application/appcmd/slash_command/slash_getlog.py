@@ -1,5 +1,4 @@
 #!python3.9
-
 from .slash_command import SlashCommand
 from application.commands import (
     GetlogCommand as GetlogCommandName,
@@ -17,8 +16,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class SlashGetlog(SlashCommand):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         self.sub_command: dict = self._data['options'][0]
         self.resolved: dict = self._data['resolved']
         self.sub_command_name: str = self.sub_command['name']
@@ -29,9 +28,9 @@ class SlashGetlog(SlashCommand):
         super().run()
         self.deferred_channel_message()
         if self.sub_command_name == GetlogCommandName.dm:
-            self.target = DmChannel(self._bot_token, self.target_id)
+            self.target = DmChannel(self.target_id)
         else:
-            self.target = Channel(self._bot_token, self.target_id)
+            self.target = Channel(self.target_id)
         self.logfile: str = self.target.logs(**self.options)
         return
     

@@ -12,8 +12,8 @@ from application.enums import (
 )
 
 class VSongAward(Form):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         self.mv_entrys: list[str] = []
         self.song_entrys: list[str] = []
         self.mv_titles: list[str] = []

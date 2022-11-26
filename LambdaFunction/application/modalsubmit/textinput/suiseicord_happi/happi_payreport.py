@@ -32,8 +32,8 @@ class TextinputHappiPayreport(TextinputSuiseicordHappi):
     # res 管理者からの報告を待ってくださいというメッセージを送信 (follow up)
     # cln 入金報告ボタンを無効化 (callback)
     """
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         _commands: list[str] = self.custom_id.split("-")
         #Textinput-happi-payreport-{bank|paypal}
         self.way: str = _commands[3].lower()
@@ -91,7 +91,7 @@ class TextinputHappiPayreport(TextinputSuiseicordHappi):
                 ]
             }]
         }
-        channel: Channel = Channel(self._bot_token, HappiSetting.Channel.payreport)
+        channel: Channel = Channel(HappiSetting.Channel.payreport)
         r: Response = channel.send(payload)
         if self.run_error(r):
             pass

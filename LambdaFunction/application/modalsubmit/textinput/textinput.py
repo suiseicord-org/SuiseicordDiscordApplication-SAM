@@ -6,8 +6,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class ModalTextInput(ModalSubmit):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         self.message_data: dict = rawdata["message"]
 
     def check(self) -> bool:

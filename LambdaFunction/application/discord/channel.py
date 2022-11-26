@@ -30,6 +30,14 @@ from application.mytypes.message import (
 
 from . import ApiBaseUrl
 
+if not __debug__:
+    from dotenv import load_dotenv
+    load_dotenv('.env')
+
+BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+APPLICATION_ID = os.getenv('APPLICATION_ID')
+APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
+
 from logging import getLogger
 _log = getLogger(__name__)
 
@@ -58,14 +66,13 @@ class InteractionPartialChannel(PartialChannel):
         self.parent_id: Snowflake = payload["parent_id"]
 
 class Channel:
-    def __init__(self, bot_token: str, _id: Snowflake):
+    def __init__(self, _id: Snowflake):
         self.id: Snowflake = _id
-        self.bot_token: str = bot_token
     
     def _get(self) -> Optional[requests.Response]:
         url = ApiBaseUrl + f"/channels/{self.id}"
         headers = {
-            "Authorization": f"Bot {self.bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
         r = requests.get(url, headers=headers)
         if r.status_code != requests.codes.ok:
@@ -110,7 +117,7 @@ class Channel:
     def send(self, payload: dict) -> requests.Response:
         url: str = ApiBaseUrl + f"/channels/{self.id}/messages"
         headers = {
-            "Authorization": f"Bot {self.bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
         r = requests.post(url, headers=headers, json=payload)
         return r
@@ -238,7 +245,7 @@ class Channel:
         url += f"?{urlencode(query)}"
 
         headers = {
-            "Authorization": f"Bot {self.bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
         r = requests.get(url, headers=headers)
         _log.debug(url)
@@ -294,18 +301,17 @@ class Channel:
         
 
 class DmChannel(Channel):
-    def __init__(self, bot_token: str, user_id: Snowflake):
+    def __init__(self, user_id: Snowflake):
         self.user_id: Snowflake = user_id
-        self.bot_token: str = bot_token
-        self.id, res = self.get_channel_id(bot_token, user_id)
+        self.id, res = self.get_channel_id(user_id)
         if self.id is None:
             raise NoDmChannelError(res)
     
     @classmethod
-    def get_channel_id(cls, bot_token: str, user_id: Snowflake) ->  tuple[Optional[Snowflake], Optional[requests.Response]]:
+    def get_channel_id(cls, user_id: Snowflake) ->  tuple[Optional[Snowflake], Optional[requests.Response]]:
         url: str = ApiBaseUrl + f"/users/@me/channels"
         headers = {
-            "Authorization": f"Bot {bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
         payload = {
             "recipient_id" : str(user_id)

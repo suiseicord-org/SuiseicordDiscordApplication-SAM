@@ -8,8 +8,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class CmpHappiAnnounceEn(CmpHappiAnnounce):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
     
     def run(self) -> None:
         super().run()

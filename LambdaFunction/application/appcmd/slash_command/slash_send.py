@@ -28,8 +28,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class SlashSend(SlashCommand):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         self.sub_command: dict = self._data['options'][0]
         self.resolved: dict = self._data['resolved']
         self.sub_command_name: str = self.sub_command['name']

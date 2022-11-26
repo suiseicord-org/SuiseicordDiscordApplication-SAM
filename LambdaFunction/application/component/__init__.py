@@ -14,22 +14,22 @@ from .suiseicord_happi import from_data as csh_from_data
 from logging import getLogger
 _log = getLogger(__name__)
 
-def from_data(rawdata: dict, bot_token: str) -> Component:
+def from_data(rawdata: dict) -> Component:
     _commands: list[str] = rawdata["data"]["custom_id"].split("-")
     command: str = _commands[0].lower()
     _log.debug("command: {}".format(command))
     if command == CommandsName.cancel:
         _log.debug("command == CommandsName.cancel")
-        return CmpCommandCancel(rawdata, bot_token)
+        return CmpCommandCancel(rawdata)
     elif command == CommandsName.start:
         _log.debug("command == CommandsName.start")
-        return csc_from_data(rawdata, bot_token)
+        return csc_from_data(rawdata)
     elif command == CommandsName.modal:
         _log.debug("command == CommandsName.modal")
-        return ccm_from_data(rawdata, bot_token)
+        return ccm_from_data(rawdata)
     elif command == CommandsName.form:
         _log.debug(command == CommandsName.form)
-        return cf_from_data(rawdata, bot_token)
+        return cf_from_data(rawdata)
     # elif command == CommandsName.happi:
     #     _log.debug("command == CommandsName.happi")
-    #     return csh_from_data(rawdata, bot_token)
+    #     return csh_from_data(rawdata)

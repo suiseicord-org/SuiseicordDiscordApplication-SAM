@@ -15,8 +15,8 @@ _log = getLogger(__name__)
 
 class CreateModalSend(CmpCreateModal):
 
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
     
     def check(self) -> bool:
         _log.debug("check()")
