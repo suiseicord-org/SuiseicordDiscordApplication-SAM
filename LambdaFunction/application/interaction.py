@@ -47,8 +47,6 @@ if not __debug__:
     load_dotenv('.env')
 
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
-APPLICATION_ID = os.getenv('APPLICATION_ID')
-APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -436,13 +434,18 @@ class Interaction:
         return False
     
     # Error
-    def error(self) -> dict:
-        return {
+    def error(self, error_msg: Optional[str] = None) -> dict:
+        content = "ERROR;\nPlease report bot operator or server admins."
+        if error_msg:
+            content += f"\ndetail:\n```\n{error_msg}\n```"
+        payload = {
             "type" : InteractionResponseType.channel_message.value,
             "data" : {
-                "content" : "ERROR;\nPlease report bot operator or server admins."
+                "flags" : MessageFlags.ephemeral.value,
+                "content" : content
             }
         }
+        self.callback(payload)
 
     # Test
     def print_response(self, res: requests.Response):

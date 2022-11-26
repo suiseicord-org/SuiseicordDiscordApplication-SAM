@@ -3,13 +3,14 @@ import os
 import json
 import requests
 from typing import Optional
-from logging import getLogger, config
 
 from application import from_data
 from application.interaction import Interaction
+from application.rds import RDSError
 from application.enums import (
     InteractionType,
-    InteractionResponseType
+    InteractionResponseType,
+    MessageFlags
 )
 # from application.happi_setting import HappiSetting
 
@@ -17,11 +18,11 @@ if not __debug__:
     from dotenv import load_dotenv
     load_dotenv('.env')
 
-BOT_TOKEN = os.getenv('DISCORD_TOKEN')
-APPLICATION_ID = os.getenv('APPLICATION_ID')
+# BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+# APPLICATION_ID = os.getenv('APPLICATION_ID')
 APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
-
+from logging import getLogger
 _log = getLogger(__name__)
 
 def verify(signature: str, timestamp: str, body: str) -> bool:
@@ -34,6 +35,20 @@ def verify(signature: str, timestamp: str, body: str) -> bool:
         return False
 
     return True
+
+def default_error(error_msg: Optional[str] = None) -> dict:
+    content = "ERROR;\nPlease report bot operator or server admins."
+    if error_msg:
+        content += f"\ndetail:\n```\n{error_msg}\n```"
+    _log.warning(content)
+    payload = {
+        "type" : InteractionResponseType.channel_message.value,
+        "data" : {
+            "flags" : MessageFlags.ephemeral.value,
+            "content" : content
+        }
+    }
+    return payload
 
 def callback(event: dict, context: dict):
     """AWS Lambda function
@@ -92,25 +107,31 @@ def callback(event: dict, context: dict):
             }
 
         _log.debug("from_data")
-        obj: Optional[Interaction] = from_data(req)
-        _log.info(str(obj))
+        try:
+            obj: Optional[Interaction] = from_data(req)
+        except Exception as e:
+            return default_error()
+        _log.info(f"obj: {str(obj)}")
         if obj:
-            # try:
-            # _log.info("check()")
-            # if not obj.check():
-            #     _log.warn("no permission.")
-            #     obj.no_permission()
-            #     return None
-            _log.debug("run()")
-            obj.run()
-            _log.debug("response()")
-            obj.response()
-            _log.debug("clean()")
-            obj.clean()
-            # except Exception as e:
-            #     _log.error(e)
-            #     return obj.error()
-            
+            try:
+                # _log.info("check()")
+                # if not obj.check():
+                #     _log.warn("no permission.")
+                #     obj.no_permission()
+                #     return None
+                _log.debug("run()")
+                obj.run()
+                _log.debug("response()")
+                obj.response()
+                _log.debug("clean()")
+                obj.clean()
+            except RDSError as e:
+                obj.error(str(e))
+            except Exception as e:
+                _log.error(e)
+                obj.error()
+        else:
+            return default_error("This command is not defined")
         return None
     # elif path == HappiSetting.httpPath:
     #     _log.info("GoogleForm SuiseiCord Happi App (from GAS)")

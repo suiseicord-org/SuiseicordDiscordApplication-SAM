@@ -35,8 +35,6 @@ if not __debug__:
     load_dotenv('.env')
 
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
-APPLICATION_ID = os.getenv('APPLICATION_ID')
-APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -326,5 +324,11 @@ class DmChannel(Channel):
 
 class NoDmChannelError(Exception):
     """DMチェンネルがない時に投げる"""
-    def __init__(self, res: requests.Response):
+    def __init__(self, res: requests.Response, *args: object):
+        super().__init__(*args)
         self.res = res
+    
+    def __str__(self) -> str:
+        if self.res.text is None:
+            return str(self.res)
+        return self.res.text

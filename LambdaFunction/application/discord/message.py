@@ -12,8 +12,6 @@ if not __debug__:
     load_dotenv('.env')
 
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
-APPLICATION_ID = os.getenv('APPLICATION_ID')
-APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 from logging import getLogger
 _log = getLogger(__name__)
