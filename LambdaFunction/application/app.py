@@ -17,7 +17,6 @@ if not __debug__:
     from dotenv import load_dotenv
     load_dotenv('.env')
 
-# init
 BOT_TOKEN = os.getenv('DISCORD_TOKEN')
 APPLICATION_ID = os.getenv('APPLICATION_ID')
 APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
@@ -93,7 +92,7 @@ def callback(event: dict, context: dict):
             }
 
         _log.debug("from_data")
-        obj: Optional[Interaction] = from_data(req, BOT_TOKEN)
+        obj: Optional[Interaction] = from_data(req)
         _log.info(str(obj))
         if obj:
             # try:

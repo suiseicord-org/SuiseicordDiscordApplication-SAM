@@ -1,13 +1,15 @@
 #!python3.9
 import os, json, sys
-from logging import getLogger, Formatter, StreamHandler
 from application.app import callback
 
-# _log = getLogger('application')
-_log = getLogger()
+if not __debug__:
+    from dotenv import load_dotenv
+    load_dotenv('.env')
 
-# Logger
 LOGGING_MODE: str = os.getenv('LOGGING_MODE')
+
+from logging import getLogger, Formatter, StreamHandler
+_log = getLogger()
 
 if (LOGGING_MODE is not None) and (LOGGING_MODE.lower() == 'debug'):
     log_level = 10 # DEBUG

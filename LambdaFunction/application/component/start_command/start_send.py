@@ -23,8 +23,8 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class CmpStartSend(CmpStartCommand):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         _commands: list[str] = self.custom_id.split('-')
         self.sub_command:str = _commands[2]
         self.target_id: Snowflake = _commands[3]
@@ -38,12 +38,12 @@ class CmpStartSend(CmpStartCommand):
         super().run()
         if self.sub_command == SendCommandName.dm:
             try:
-                self.target = DmChannel(self._bot_token, self.target_id)
+                self.target = DmChannel(self.target_id)
             except NoDmChannelError as e:
                 self.res: requests.Response = e.res
                 return
         else:
-            self.target = Channel(self._bot_token, self.target_id)
+            self.target = Channel(self.target_id)
         self.embed = self.message_data["embeds"][0]
         fields = dict()
         for field in self.embed["fields"]:

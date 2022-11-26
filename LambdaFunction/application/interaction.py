@@ -1,4 +1,5 @@
 #!python3.9
+import os
 import requests
 from typing import (
     Any,
@@ -41,13 +42,20 @@ from application.discord.channel import Channel
 from application.discord.member import Member
 from application.discord.user import PartiaUser, User
 
+if not __debug__:
+    from dotenv import load_dotenv
+    load_dotenv('.env')
+
+BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+APPLICATION_ID = os.getenv('APPLICATION_ID')
+APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
 
 from logging import getLogger
 _log = getLogger(__name__)
 
 class Interaction:
 
-    def __init__(self, rawdata: dict, bot_token: str):
+    def __init__(self, rawdata: dict):
         """Parse Data"""
         self.application_id: Snowflake  = rawdata['application_id']
         self.id: Snowflake              = rawdata['id']
@@ -60,13 +68,11 @@ class Interaction:
 
             self._guild_id: Optional[Snowflake] = rawdata.get('guild_id')
             self._channel_id: Snowflake         = rawdata['channel_id']
-            self.channel: Channel               = Channel(bot_token, self._channel_id)
+            self.channel: Channel               = Channel(self._channel_id)
             self.commander = Member(d, self._guild_id) \
                 if (d := rawdata.get("member")) is not None else User(rawdata["user"])
             self.locale: str                    = rawdata['locale']
             self.guild_locale: Optional[str]    = rawdata.get('guild_locale')
-
-        self._bot_token: str            = bot_token
 
         self._deferred: bool            = False
 
@@ -123,7 +129,7 @@ class Interaction:
     @property
     def headers(self) -> dict[str, str]:
         return {
-            "Authorization": f"Bot {self._bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
 
     def callback(self, payload: dict) -> requests.Response:
@@ -313,7 +319,7 @@ class Interaction:
     def get_ACP(self) -> Optional[GuildApplicationCommandPermissionsListPayload]:
         url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions'
         headers = {
-            "Authorization": f"Bot {self._bot_token}"
+            "Authorization": f"Bot {BOT_TOKEN}"
         }
 
         r: requests.Response = requests.get(url, headers=headers)
@@ -348,7 +354,7 @@ class Interaction:
 #     async def get_guild_ACP(self, command_id: str) -> Optional[GuildApplicationCommandPermissionsPayload]:
 #         url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/{command_id}/permissions'
 #         headers = {
-#             "Authorization": f"Bot {self._bot_token}"
+#             "Authorization": f"Bot {BOT_TOKEN}"
 #         }
 #
 #         async with aiohttp.ClientSession() as session:
@@ -370,7 +376,7 @@ class Interaction:
 #     async def get_ACP(self) -> Optional[GuildApplicationCommandPermissionsPayload]:
 #         url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions'
 #         headers = {
-#             "Authorization": f"Bot {self._bot_token}"
+#             "Authorization": f"Bot {BOT_TOKEN}"
 #         }
 #
 #         async with aiohttp.ClientSession() as session:

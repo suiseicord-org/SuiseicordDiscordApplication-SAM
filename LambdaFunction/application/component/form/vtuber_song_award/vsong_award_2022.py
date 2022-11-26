@@ -3,8 +3,8 @@
 from .vsong_award import VSongAward
 
 class VSongAward2022(VSongAward):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         self.form_url: str = 'https://docs.google.com/forms/d/e/1FAIpQLSeRD6OyKNOnVDbb2vtktWV1W1sarYj8iM7sDGlPmJW3pMwMSA/viewform'
         self.mv_entrys: list[str] = [
             "1092816918",

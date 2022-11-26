@@ -16,12 +16,12 @@ from logging import getLogger
 _log = getLogger(__name__)
 
 class CmpHappiPaycheck(CmpSuiseicordHappi):
-    def __init__(self, rawdata: dict, bot_token: str):
-        super().__init__(rawdata, bot_token)
+    def __init__(self, rawdata: dict):
+        super().__init__(rawdata)
         _commands: list[str] = self.custom_id.split("-")
         # happi-paycheck-{channel_id}-{message_id}-{amount}
-        self.target_ch: Channel = Channel(bot_token, _commands[2])
-        self.target_msg: Message = Message(bot_token, _commands[2], _commands[3])
+        self.target_ch: Channel = Channel(_commands[2])
+        self.target_msg: Message = Message(_commands[2], _commands[3])
     
     def run(self) -> None:
         """報告者に対して確認したことを送信する。"""
