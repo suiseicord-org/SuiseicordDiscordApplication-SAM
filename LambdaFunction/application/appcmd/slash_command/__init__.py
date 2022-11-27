@@ -4,6 +4,7 @@ from application.commands import SlashCommand as SlashCommandName
 from .slash_command import SlashCommand
 from .slash_send import SlashSend
 from .slash_user import SlashUser
+from .thread import from_data as sct_from_data
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -18,3 +19,6 @@ def from_data(rawdata: dict) -> SlashCommand:
     elif name == SlashCommandName.user:
         _log.debug("name == SlashCommandName.user")
         return SlashUser(rawdata)
+    elif name == SlashCommandName.thread:
+        _log.debug("name == SlashCommandName.thread")
+        return sct_from_data(rawdata)

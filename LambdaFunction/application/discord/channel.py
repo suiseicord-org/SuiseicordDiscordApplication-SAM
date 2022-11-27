@@ -28,15 +28,7 @@ from application.mytypes.message import (
     Attachment as AttachmentPayload
 )
 
-from . import ApiBaseUrl
-
-if not __debug__:
-    from dotenv import load_dotenv
-    load_dotenv('.env')
-
-BOT_TOKEN = os.getenv('DISCORD_TOKEN')
-APPLICATION_ID = os.getenv('APPLICATION_ID')
-APPLICATION_PUBLIC_KEY = os.getenv('APPLICATION_PUBLIC_KEY')
+from .http import Route
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -66,19 +58,31 @@ class InteractionPartialChannel(PartialChannel):
         self.parent_id: Snowflake = payload["parent_id"]
 
 class Channel:
-    def __init__(self, _id: Snowflake):
+    def __init__(self, _id: Optional[Snowflake] = None, payload: Optional[ChannelPayload] = None):
+        """Either id or payload is required"""
+        if _id is None:
+            if payload is None:
+                _log.error("No parameters.")
+                raise "No parameters."
+            _id = payload[id]
         self.id: Snowflake = _id
+        if payload:
+            self.parse_parload(payload)
+            
     
-    def _get(self) -> Optional[requests.Response]:
-        url = ApiBaseUrl + f"/channels/{self.id}"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.get(url, headers=headers)
-        if r.status_code != requests.codes.ok:
+    def _get(self) -> requests.Response:
+        route: Route = Route('GET', f"/channels/{self.id}")
+        r: requests.Response = route.requets()
+
+        if not r.ok:
             _log.error(r.text)
             return r
+
         _payload: ChannelPayload = r.json()
+        self.parse_parload(_payload)
+        return r
+    
+    def parse_parload(self, _payload: ChannelPayload) -> None:
         self.type: ChannelType = ChannelType(_payload["type"])
         # guild channel
         self._guild_id: Optional[Snowflake] = _payload.get("guild_id")
@@ -114,12 +118,11 @@ class Channel:
         self._last_pin_timestamp: str = _payload.get("last_pin_timestamp")
         return 
     
-    def send(self, payload: dict) -> requests.Response:
-        url: str = ApiBaseUrl + f"/channels/{self.id}/messages"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.post(url, headers=headers, json=payload)
+    def send(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and payload is not None:
+            kwargs["json_payload"] = payload
+        route: Route = Route('POST', f"/channels/{self.id}/messages", **kwargs)
+        r = route.requets()
         return r
     
     def logs(
@@ -136,8 +139,8 @@ class Channel:
         :return: message file path (csv files)"""
         # init
         if not hasattr(self, 'type'):
-            r: Optional[requests.Response] = self._get()
-            if r is not None:
+            r: requests.Response = self._get()
+            if not r.ok:
                 # fail
                 return (False, r.text)
 
@@ -230,7 +233,6 @@ class Channel:
         before: Optional[Snowflake] = None,
         after:  Optional[Snowflake] = None,
     ) -> list[MessagePayload]:
-        url: str = ApiBaseUrl + f"/channels/{self.id}/messages"
         if (limit is None) or (limit < 1) or (100 < limit):
             limit = 100
         query = {
@@ -242,16 +244,10 @@ class Channel:
             query["before"] = before
         if after is not None:
             query["after"] = after
-        url += f"?{urlencode(query)}"
-
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.get(url, headers=headers)
-        _log.debug(url)
-        _log.debug(str(r.status_code))
-        _log.debug(r.text)
-
+        
+        route: Route = Route('GET', f"/channels/{self.id}/messages", query=query)
+        r = route.requets()
+        
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
@@ -298,7 +294,14 @@ class Channel:
                 with open(fp, "r", encoding="utf-8") as f:
                     mas.write(f.read() + '\n')
         return logfile
-        
+    
+    def create_thread(
+        self,
+        name: str,
+        *,
+        auto_archive_duration: int = None
+    ) -> ChannelPayload:
+        pass
 
 class DmChannel(Channel):
     def __init__(self, user_id: Snowflake):
@@ -309,14 +312,11 @@ class DmChannel(Channel):
     
     @classmethod
     def get_channel_id(cls, user_id: Snowflake) ->  tuple[Optional[Snowflake], Optional[requests.Response]]:
-        url: str = ApiBaseUrl + f"/users/@me/channels"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
         payload = {
             "recipient_id" : str(user_id)
         }
-        r: requests.Response = requests.post(url, headers=headers, json=payload)
+        route: Route = Route('POST', f"/users/@me/channels", json_payload=payload)
+        r = route.requets()
         if not r.ok:
             _log.warning(r.status_code)
             _log.warning(r.text)
@@ -326,5 +326,11 @@ class DmChannel(Channel):
 
 class NoDmChannelError(Exception):
     """DMチェンネルがない時に投げる"""
-    def __init__(self, res: requests.Response):
+    def __init__(self, res: requests.Response, *args: object):
+        super().__init__(*args)
         self.res = res
+    
+    def __str__(self) -> str:
+        if self.res.text is None:
+            return str(self.res)
+        return self.res.text

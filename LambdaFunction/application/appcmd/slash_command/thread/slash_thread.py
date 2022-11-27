@@ -1,17 +1,14 @@
 #!python3.9
-from ..application_command import ApplicationCommand
+
+from ..slash_command import SlashCommand
 
 from logging import getLogger
 _log = getLogger(__name__)
 
-class SlashCommand(ApplicationCommand):
+class SlashThread(SlashCommand):
     def __init__(self, rawdata: dict):
         super().__init__(rawdata)
     
-    def check(self) -> bool:
-        """Slash Commands is always 'True'."""
-        return True
-
     def run(self) -> None:
         super().run()
         return
@@ -23,4 +20,3 @@ class SlashCommand(ApplicationCommand):
     def clean(self) -> None:
         super().clean()
         return
-
