@@ -16,9 +16,10 @@ class Commands:
     happi = "happi"
 
 class SlashCommand:
-    send = "send"
-    getlog = "getlog"
-    user = "user"
+    send    = "send"
+    getlog  = "getlog"
+    user    = "user"
+    thread  = "thread"
 
 class SendCommand:
     dm = "dm"
@@ -41,6 +42,9 @@ class GetlogCommand:
 
 class GetlogCommandOption:
     target = 'target'
+
+class ThreadCommand:
+    create = "create"
 
 class TextinputSubCommand:
     send = "send"

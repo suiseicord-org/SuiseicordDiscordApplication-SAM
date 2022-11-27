@@ -64,19 +64,34 @@ class InteractionPartialChannel(PartialChannel):
         self.parent_id: Snowflake = payload["parent_id"]
 
 class Channel:
-    def __init__(self, _id: Snowflake):
+    def __init__(self, _id: Optional[Snowflake] = None, payload: Optional[ChannelPayload] = None):
+        """Either id or payload is required"""
+        if _id is None:
+            if payload is None:
+                _log.error("No parameters.")
+                raise "No parameters."
+            _id = payload[id]
         self.id: Snowflake = _id
+        if payload:
+            self.parse_parload(payload)
+            
     
-    def _get(self) -> Optional[requests.Response]:
+    def _get(self) -> requests.Response:
         url = ApiBaseUrl + f"/channels/{self.id}"
         headers = {
             "Authorization": f"Bot {BOT_TOKEN}"
         }
         r = requests.get(url, headers=headers)
-        if r.status_code != requests.codes.ok:
+
+        if not r.ok:
             _log.error(r.text)
             return r
+
         _payload: ChannelPayload = r.json()
+        self.parse_parload(_payload)
+        return r
+    
+    def parse_parload(self, _payload: ChannelPayload) -> None:
         self.type: ChannelType = ChannelType(_payload["type"])
         # guild channel
         self._guild_id: Optional[Snowflake] = _payload.get("guild_id")
@@ -134,8 +149,8 @@ class Channel:
         :return: message file path (csv files)"""
         # init
         if not hasattr(self, 'type'):
-            r: Optional[requests.Response] = self._get()
-            if r is not None:
+            r: requests.Response = self._get()
+            if not r.ok:
                 # fail
                 return (False, r.text)
 
@@ -296,7 +311,14 @@ class Channel:
                 with open(fp, "r", encoding="utf-8") as f:
                     mas.write(f.read() + '\n')
         return logfile
-        
+    
+    def create_thread(
+        self,
+        name: str,
+        *,
+        auto_archive_duration: int = None
+    ) -> ChannelPayload:
+        pass
 
 class DmChannel(Channel):
     def __init__(self, user_id: Snowflake):
