@@ -53,12 +53,11 @@ class SlashUser(SlashCommand):
         elif self.sub_command_name == UserCommandName.id:
             self.target = get_member_or_user(
                 self.target_id,
-                self._guild_id,
-                self.headers
+                self._guild_id
             )
         if isinstance(self.target, Member):
             # get guild roles
-            self.target.set_guild_roles(self.headers)
+            self.target.set_guild_roles()
         return
 
     
