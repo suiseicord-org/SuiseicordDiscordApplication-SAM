@@ -2,22 +2,29 @@
 import json
 import requests
 from datetime import datetime
+from typing import (
+    Optional
+)
 
 from .start_command import CmpStartCommand
 
 from application.utils import isotimestamp
 from application.commands import (
-    SendCommand as SendCommandName
+    SendCommand as SendCommandName,
+    SendCommandOption as SendCommandOptionName
 )
 from application.components import CustomID
+from application.discord.attachment import Attachment
 from application.enums import (
     InteractionResponseType,
     ButtonStyle,
     ComponentType,
     CommandColor
 )
-from application.mytypes.snowflake import Snowflake
 from application.discord.channel import Channel, DmChannel, NoDmChannelError
+from application.discord.message import Message
+from application.mytypes.snowflake import Snowflake
+from application.mytypes.embed import Embed as EmbedPayload
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -48,11 +55,16 @@ class CmpStartSend(CmpStartCommand):
         fields = dict()
         for field in self.embed["fields"]:
             fields[field["name"]] = field["value"]
-        if fields.get("attachments") is not None:
-            self.attachments = fields["attachments"].split("\n")
-        else:
+        self.attachments: Optional[list[Attachment]] = []
+        for key, value in fields.items():
+            key: str; value: str
+            if key.startswith(SendCommandOptionName.attachments):
+                self.attachments.append(Attachment(
+                    json.loads(value.strip('`json'))
+                ))
+        if len(self.attachments) < 1:
             self.attachments = None
-        self.res: requests.Response = self.target.send(self.send_payload)
+        self.res: requests.Response = self.target.send(self.send_payload, attachments=self.attachments)
         if self.run_error(self.res):
             pass
         else:
@@ -76,14 +88,6 @@ class CmpStartSend(CmpStartCommand):
         payload: dict = {
             "content" : self.embed.get("description")
         }
-        if self.attachments is not None:
-            payload["embeds"] = []
-            for url in self.attachments:
-                payload["embeds"].append({
-                    "image" : {
-                        "url" : url
-                    }
-                })
         # happi announce
         if self.sub_command == SendCommandName.happi:
             #componentを追加
@@ -114,10 +118,13 @@ class CmpStartSend(CmpStartCommand):
         if self.res.ok:
             embeds[0]["title"] = "送信成功"
             embeds[0]["color"] = CommandColor.success.value
+            # message: Message = Message(self.res.json())
         else:
             embeds[0]["title"] = "送信失敗"
             text = json.dumps(self.res.json(), ensure_ascii=False, indent=4)
             text = text[:1000]
+            if not embeds[0].get("fields", False):
+                embeds[0]["fields"] = []
             embeds[0]["fields"].append({
                 "name" : "詳細",
                 "value" : f"```json\n{text}\n```"

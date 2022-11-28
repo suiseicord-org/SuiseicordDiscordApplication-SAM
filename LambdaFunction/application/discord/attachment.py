@@ -107,3 +107,13 @@ class Attachment:
             payload['description'] = self.description
 
         return payload
+    
+    @classmethod
+    def file_content_types(cls) -> tuple[str, ...]:
+        return (
+            "image/png", 
+            "image/jpeg", 
+            "image/webp", 
+            "image/gif", 
+            "image/lottie"
+        )
