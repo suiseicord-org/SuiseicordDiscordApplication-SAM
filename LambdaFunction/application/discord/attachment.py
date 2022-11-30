@@ -38,8 +38,6 @@ class Attachment:
         self.opened: bool = False
         self._closer = None
 
-        self.fp = self.open(use_cached=use_cached)
-
     def save(self, file_path: str, *, use_cached: bool = False) -> str:
         if use_cached:
             url = self.proxy_url
@@ -48,9 +46,9 @@ class Attachment:
         _log.info("Save file; url: {}".format(url))
         
         if not self.opened:
-            self.fp = self.open(use_cached=use_cached)
+            file_obj = self.open(use_cached=use_cached)
         
-        raw: Any = self.fp
+        raw: Any = file_obj
             
         _log.info("Start save to '{}'".format(file_path))
         with open(file_path, 'wb') as f:
@@ -107,3 +105,13 @@ class Attachment:
             payload['description'] = self.description
 
         return payload
+    
+    @classmethod
+    def file_content_types(cls) -> tuple[str, ...]:
+        return (
+            "image/png", 
+            "image/jpeg", 
+            "image/webp", 
+            "image/gif", 
+            "image/lottie"
+        )

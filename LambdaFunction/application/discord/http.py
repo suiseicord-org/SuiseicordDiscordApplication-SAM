@@ -64,14 +64,16 @@ class Route:
             index = 0
             attachments_payload: list = []
             files_data: dict = {}
-            for file in self.files:
-                attachments_payload.append(file.to_dict(index))
-                files_data[f"files[{index}]"] = (file.filename, file.fp)
-                index += 1
-            for attachment in self.attachments:
-                attachments_payload.append(attachment.to_dict(index))
-                files_data[f"files[{index}]"] = (attachment.filename, attachment.fp, attachment.content_type)
-                index += 1
+            if self.files is not None:
+                for file in self.files:
+                    attachments_payload.append(file.to_dict(index))
+                    files_data[f"files[{index}]"] = (file.filename, file.fp)
+                    index += 1
+            if self.attachments is not None:
+                for attachment in self.attachments:
+                    attachments_payload.append(attachment.to_dict(index))
+                    files_data[f"files[{index}]"] = (attachment.filename, attachment.open(), attachment.content_type)
+                    index += 1
             
             if self.json_payload is None:
                 self.json_payload = {}
