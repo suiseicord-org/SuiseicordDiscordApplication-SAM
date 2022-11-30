@@ -1,6 +1,7 @@
 #!python3.9
 import os
 import json
+import traceback
 import requests
 from typing import Optional
 
@@ -127,9 +128,10 @@ def callback(event: dict, context: dict):
                 obj.clean()
             except RDSError as e:
                 obj.error(str(e))
-            # except Exception as e:
-            #     _log.error(e)
-            #     obj.error()
+            except Exception as e:
+                t = traceback.format_exc()
+                _log.error(t.replace('\n', '\r'))
+                obj.error()
         else:
             return default_error("This command is not defined")
         return None

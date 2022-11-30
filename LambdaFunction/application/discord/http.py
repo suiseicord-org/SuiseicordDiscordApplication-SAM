@@ -72,7 +72,7 @@ class Route:
             if self.attachments is not None:
                 for attachment in self.attachments:
                     attachments_payload.append(attachment.to_dict(index))
-                    files_data[f"files[{index}]"] = (attachment.filename, attachment.fp, attachment.content_type)
+                    files_data[f"files[{index}]"] = (attachment.filename, attachment.open(), attachment.content_type)
                     index += 1
             
             if self.json_payload is None:

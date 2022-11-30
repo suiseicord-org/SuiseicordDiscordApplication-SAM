@@ -31,7 +31,10 @@ class PartiaMessage:
 
 class Message(PartiaMessage):
     def __init__(self, payload: MessagePayload):
-        super().__init__(payload["channel_id"], payload["id"])
+        super().__init__(
+            payload["channel_id"], 
+            payload["id"]
+        )
     
     def to_embed(self) -> EmbedPayload:
         pass

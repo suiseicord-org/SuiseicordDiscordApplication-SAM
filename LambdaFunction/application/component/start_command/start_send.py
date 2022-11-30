@@ -14,13 +14,16 @@ from application.commands import (
     SendCommandOption as SendCommandOptionName
 )
 from application.components import CustomID
-from application.discord.attachment import Attachment
 from application.enums import (
     InteractionResponseType,
     ButtonStyle,
     ComponentType,
     CommandColor
 )
+from application.mytypes.message import (
+    Message as MessagePayload
+)
+from application.discord.attachment import Attachment
 from application.discord.channel import Channel, DmChannel, NoDmChannelError
 from application.discord.message import Message
 from application.mytypes.snowflake import Snowflake
@@ -118,7 +121,35 @@ class CmpStartSend(CmpStartCommand):
         if self.res.ok:
             embeds[0]["title"] = "送信成功"
             embeds[0]["color"] = CommandColor.success.value
-            # message: Message = Message(self.res.json())
+            payload: MessagePayload = self.res.json()
+            attachments: list[Attachment] = []
+            image_url: Optional[str] = None
+            for attachment_payload in payload['attachments']:
+                attachment: Attachment = Attachment(attachment_payload)
+                attachments.append(attachment)
+                if (image_url is None) and attachment.content_type in Attachment.file_content_types():
+                    image_url = attachment.url
+            if image_url is not None:
+                embeds[0]['image']['url'] = image_url
+            remove_index: list[int] = []
+            for index, fild in enumerate(embeds[0].get("fields", [])):
+                if fild['name'].startswith(SendCommandOptionName.attachments):
+                    remove_index.append(index)
+                elif fild['name'].startswith("url_" + SendCommandOptionName.attachments):
+                    remove_index.append(index)
+            remove_index.sort(reverse=True)
+            for i in remove_index:
+                embeds[0]["fields"].pop(i)
+            embeds[0]["fields"].append({
+                "name" : "message_id",
+                "value" : payload["id"]
+            })
+            if len(attachments) > 0:
+                embeds[0]["fields"].append({
+                    "name" : 'sent_' + SendCommandOptionName.attachments + '_url',
+                    "value" : "\n".join(a.url for a in attachments)
+                })
+            # message: Message = Message(payload)
         else:
             embeds[0]["title"] = "送信失敗"
             text = json.dumps(self.res.json(), ensure_ascii=False, indent=4)
