@@ -1,30 +1,40 @@
 #!python3.9
 import os
 import requests
+from typing import Optional
 
 from application.mytypes.snowflake import Snowflake
+from application.mytypes.message import (
+    Message as MessagePayload
+)
+from application.mytypes.embed import (
+    Embed as EmbedPayload
+)
 
-from . import ApiBaseUrl
 from .channel import Channel
-
-if not __debug__:
-    from dotenv import load_dotenv
-    load_dotenv('.env')
-
-BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+from .http import Route
 
 from logging import getLogger
 _log = getLogger(__name__)
 
-class Message:
+class PartiaMessage:
     def __init__(self, ch_id: Snowflake, msg_id: Snowflake):
         self.id: Snowflake = msg_id
         self.channel: Channel = Channel(ch_id)
     
-    def edit(self, payload: dict) -> requests.Response:
-        url: str = ApiBaseUrl + f"/channels/{self.channel.id}/messages/{self.id}"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.patch(url, headers=headers, json=payload)
+    def edit(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if kwargs.get("json_payload") and payload is not None:
+            kwargs["json_payload"] = payload
+        route = Route('PATCH', f"/channels/{self.channel.id}/messages/{self.id}", **kwargs)
+        r = route.requets()
         return r
+
+class Message(PartiaMessage):
+    def __init__(self, payload: MessagePayload):
+        super().__init__(
+            payload["channel_id"], 
+            payload["id"]
+        )
+    
+    def to_embed(self) -> EmbedPayload:
+        pass

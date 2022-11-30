@@ -1,9 +1,11 @@
 #!python3.9
+import json
 from typing import Optional
 from requests import Response
 
 from .slash_command import SlashCommand
 
+from application.discord.attachment import Attachment
 from application.discord.channel import InteractionPartialChannel
 from application.discord.member import Member
 from application.discord.user import PartiaUser
@@ -160,18 +162,23 @@ class SlashSend(SlashCommand):
         # attachments
         attachments: Optional[dict] = self.resolved.get("attachments")
         if attachments is not None:
+            index: int = 0
             urls: list[str] = []
             for attachment in attachments.values():
+                embed["fields"].append({
+                    "name" : SendCommandOptionName.attachments + f'[{index}]',
+                    "value" : "```json\n{}\n```".format(json.dumps(attachment, ensure_ascii=False, indent=4))
+                })
                 urls.append(attachment["url"])
-            embed["fields"].append({
-                "name" : SendCommandOptionName.attachments,
-                "value" : "\n".join(urls)
-            })
-            for attachment in attachments.values():
-                if attachment["content_type"] in ("image/png", "image/jpeg", "image/webp", "image/gif", "image/lottie"):
+                if (not embed.get("image", False)) and attachment["content_type"] in Attachment.file_content_types():
                     embed["image"] = {
                         "url" : attachment["url"]
                     }
+                index += 1
+            embed["fields"].append({
+                "name" : "url_" + SendCommandOptionName.attachments,
+                "value" : "\n".join(urls)
+            })
         
         return embed
 

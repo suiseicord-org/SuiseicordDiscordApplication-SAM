@@ -41,6 +41,7 @@ from application.discord import ApiBaseUrl
 from application.discord.channel import Channel
 from application.discord.member import Member
 from application.discord.user import PartiaUser, User
+from application.discord.http import Route
 
 if not __debug__:
     from dotenv import load_dotenv
@@ -111,64 +112,42 @@ class Interaction:
         * Disabalbe Button
         """
         ...
-    
-    @property
-    def interaction_url(self):
-        return ApiBaseUrl + f"/interactions/{self.id}/{self.token}"
-    
-    @property
-    def application_url(self):
-        return ApiBaseUrl + f"/interactions/{self.application_id}/{self.token}"
 
-    @property
-    def webhook_url(self):
-        return ApiBaseUrl + f"/webhooks/{self.application_id}/{self.token}"
-    
-    @property
-    def headers(self) -> dict[str, str]:
-        return {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-
-    def callback(self, payload: dict) -> requests.Response:
+    def callback(self, payload: Optional[dict], **kwargs) -> requests.Response:
         if not self._deferred:
-            return self.original_callback(payload)
+            return self.original_callback(payload, **kwargs)
         else:
             # already deferrd. 
             irt: InteractionResponseType = InteractionResponseType(payload["type"])
             if irt == InteractionResponseType.channel_message:
-                return self.followup(payload["data"])
+                return self.followup(payload["data"], **kwargs)
             elif irt == InteractionResponseType.message_update:
-                return self.update_callback(payload["data"])
+                return self.update_callback(payload["data"], **kwargs)
             else:
-                return self.followup(payload)
+                return self.followup(payload, **kwargs)
     
-    def original_callback(self, payload: dict) -> requests.Response:
-        url = self.interaction_url + "/callback"
-        _log.info("target url: {}".format(url))
-        _log.info("payload: {}".format(str(payload)))
-        res: requests.Response = requests.post(url, json=payload)
-        _log.info("status code: {}".format(res.status_code))
-        _log.debug("response: {}".format(res.text))
-        print(res.text)
+    def original_callback(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and (payload is not None):
+            kwargs["json_payload"] = payload
+        _log.debug("kwards: {}".format(kwargs))
+        route: Route = Route('POST', f"/interactions/{self.id}/{self.token}/callback", **kwargs)
+        res = route.requets(appcmd_response=True)
         return res
 
-    def update_callback(self, payload: dict) -> requests.Response:
-        url = self.webhook_url + "/messages/@original"
-        _log.info("target url: {}".format(url))
-        _log.info("payload: {}".format(str(payload)))
-        res: requests.Response = requests.patch(url, json=payload)
-        _log.info("status code: {}".format(res.status_code))
-        _log.debug("response: {}".format(res.text))
+    def update_callback(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and (payload is not None):
+            kwargs["json_payload"] = payload
+        _log.debug("kwards: {}".format(kwargs))
+        route: Route = Route('PATCH', f"/webhooks/{self.application_id}/{self.token}/messages/@original", **kwargs)
+        res = route.requets()
         return res
     
-    def followup(self, payload: dict) -> requests.Response:
-        url = self.webhook_url
-        _log.info("target url: {}".format(url))
-        _log.info("payload: {}".format(str(payload)))
-        res: requests.Response = requests.post(url, json=payload)
-        _log.info("status code: {}".format(res.status_code))
-        _log.debug("response: {}".format(res.text))
+    def followup(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and (payload is not None):
+            kwargs["json_payload"] = payload
+        _log.debug("kwards: {}".format(kwargs))
+        route: Route = Route('POST', f"/webhooks/{self.application_id}/{self.token}", **kwargs)
+        res = route.requets()
         return res
     
     def deferred_channel_message(self) -> Optional[requests.Response]:
@@ -183,7 +162,8 @@ class Interaction:
         _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
 
-        self._deferred = True
+        if res.ok:
+            self._deferred = True
 
         return res
     
@@ -199,7 +179,8 @@ class Interaction:
         _log.info("status code: {}".format(res.status_code))
         _log.debug("response: {}".format(res.text))
 
-        self._deferred = True
+        if res.ok:
+            self._deferred = True
 
         return res
 
@@ -315,20 +296,14 @@ class Interaction:
         return guild_acp
 
     def get_ACP(self) -> Optional[GuildApplicationCommandPermissionsListPayload]:
-        url = ApiBaseUrl + f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions'
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-
-        r: requests.Response = requests.get(url, headers=headers)
+        route: Route = Route('GET', f'/applications/{self.application_id}/guilds/{self._guild_id}/commands/permissions')
+        r = route.requets()
 
         if r.status_code == requests.codes.ok:
-            _log.debug(url)
             _log.debug(str(r.status_code))
             _log.debug(r.text)
             return r.json()
         else:
-            _log.warn(url)
             _log.warn(str(r.status_code))
             _log.warn(r.text)
             return None

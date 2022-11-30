@@ -28,13 +28,7 @@ from application.mytypes.message import (
     Attachment as AttachmentPayload
 )
 
-from . import ApiBaseUrl
-
-if not __debug__:
-    from dotenv import load_dotenv
-    load_dotenv('.env')
-
-BOT_TOKEN = os.getenv('DISCORD_TOKEN')
+from .http import Route
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -77,11 +71,8 @@ class Channel:
             
     
     def _get(self) -> requests.Response:
-        url = ApiBaseUrl + f"/channels/{self.id}"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.get(url, headers=headers)
+        route: Route = Route('GET', f"/channels/{self.id}")
+        r: requests.Response = route.requets()
 
         if not r.ok:
             _log.error(r.text)
@@ -127,12 +118,11 @@ class Channel:
         self._last_pin_timestamp: str = _payload.get("last_pin_timestamp")
         return 
     
-    def send(self, payload: dict) -> requests.Response:
-        url: str = ApiBaseUrl + f"/channels/{self.id}/messages"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.post(url, headers=headers, json=payload)
+    def send(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and payload is not None:
+            kwargs["json_payload"] = payload
+        route: Route = Route('POST', f"/channels/{self.id}/messages", **kwargs)
+        r = route.requets()
         return r
     
     def logs(
@@ -243,7 +233,6 @@ class Channel:
         before: Optional[Snowflake] = None,
         after:  Optional[Snowflake] = None,
     ) -> list[MessagePayload]:
-        url: str = ApiBaseUrl + f"/channels/{self.id}/messages"
         if (limit is None) or (limit < 1) or (100 < limit):
             limit = 100
         query = {
@@ -255,16 +244,10 @@ class Channel:
             query["before"] = before
         if after is not None:
             query["after"] = after
-        url += f"?{urlencode(query)}"
-
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
-        r = requests.get(url, headers=headers)
-        _log.debug(url)
-        _log.debug(str(r.status_code))
-        _log.debug(r.text)
-
+        
+        route: Route = Route('GET', f"/channels/{self.id}/messages", query=query)
+        r = route.requets()
+        
         if r.status_code == requests.codes.ok:
             return r.json()
         else:
@@ -329,14 +312,11 @@ class DmChannel(Channel):
     
     @classmethod
     def get_channel_id(cls, user_id: Snowflake) ->  tuple[Optional[Snowflake], Optional[requests.Response]]:
-        url: str = ApiBaseUrl + f"/users/@me/channels"
-        headers = {
-            "Authorization": f"Bot {BOT_TOKEN}"
-        }
         payload = {
             "recipient_id" : str(user_id)
         }
-        r: requests.Response = requests.post(url, headers=headers, json=payload)
+        route: Route = Route('POST', f"/users/@me/channels", json_payload=payload)
+        r = route.requets()
         if not r.ok:
             _log.warning(r.status_code)
             _log.warning(r.text)

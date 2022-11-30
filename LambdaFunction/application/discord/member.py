@@ -15,7 +15,8 @@ from application.utils import parse_time
 from .user import User, PartiaUser
 from .role import Role
 
-from . import ApiBaseUrl, ImageBaseUrl
+from . import ImageBaseUrl
+from .http import Route
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -58,14 +59,9 @@ class Member(PartiaMember, User):
             return ImageBaseUrl + f"guilds/{self.guild_id}/users/{self.id}/avatars/{self._guild_avatar_hash}.png"
         return super().avatar_url
     
-    def set_guild_roles(self, headers: dict):
-        url = ApiBaseUrl + f'/guilds/{self.guild_id}/roles'
-        r: requests.Response = requests.get(
-            url,
-            headers = headers
-        )
-        _log.debug("status code: {}".format(r.status_code))
-        _log.debug("response: {}".format(r.text))
+    def set_guild_roles(self):
+        route = Route('GET', f'/guilds/{self.guild_id}/roles')
+        r = route.requets()
         if r.ok:
             self.roles: list[Role] = []
             role_dict: dict[Role] = dict()
@@ -76,14 +72,9 @@ class Member(PartiaMember, User):
         self.roles.sort(reverse=True, key=lambda x:x.position)
         _log.debug(self.roles)
     
-def get_member_or_user(user_id: Snowflake, guild_id: Snowflake, headers: dict):
-    url = ApiBaseUrl + f'/guilds/{guild_id}/members/{user_id}'
-    r: requests.Response = requests.get(
-        url,
-        headers = headers
-    )
-    _log.debug("status code: {}".format(r.status_code))
-    _log.debug("response: {}".format(r.text))
+def get_member_or_user(user_id: Snowflake, guild_id: Snowflake):
+    route = Route('GET', f'/guilds/{guild_id}/members/{user_id}')
+    r = route.requets()
     if r.ok:
         return Member(r.json(), guild_id)
     
@@ -91,13 +82,8 @@ def get_member_or_user(user_id: Snowflake, guild_id: Snowflake, headers: dict):
         if r.json()["code"] == 10013:
             return None
     
-    url = ApiBaseUrl + f'/users/{user_id}'
-    r: requests.Response = requests.get(
-        url,
-        headers = headers
-    )
-    _log.debug("status code: {}".format(r.status_code))
-    _log.debug("response: {}".format(r.text))
+    route = Route('GET', f'/users/{user_id}')
+    r = route.requets()
     if r.ok:
         return User(r.json())
     
