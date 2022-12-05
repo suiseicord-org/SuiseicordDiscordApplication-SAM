@@ -8,6 +8,7 @@ from application.enums import (
 from application.commands import (
     Commands as CommandsName,
     SlashCommand as SlashCommandName,
+    ChannelCommand as ChannelCommandName,
     HappiCommand as HappiCOmmandName,
     HappiAnnounceLanguage
 )
@@ -16,6 +17,9 @@ class CustomID:
     start_send: str = f'{CommandsName.start}-{SlashCommandName.send}-' + '{sub_command}-{target}'
     modal_send: str = f'{CommandsName.modal}-{SlashCommandName.send}-' + '{sub_command}-{target}'
     textinput_send: str = f'{CommandsName.textinput}-{SlashCommandName.send}'
+    start_channel_topic: str = f'{CommandsName.start}-{ChannelCommandName.channel_topic}-' + '{target}'
+    modal_channel_topic: str = f'{CommandsName.modal}-{ChannelCommandName.channel_topic}-' + '{target}'
+    textinput_channel_topic: str = f'{CommandsName.textinput}-{ChannelCommandName.channel_topic}'
 
     cansell: str = CommandsName.cancel
 

@@ -20,6 +20,7 @@ class SlashCommand:
     getlog  = "getlog"
     user    = "user"
     thread  = "thread"
+    channel = "channel"
 
 class SendCommand:
     dm = "dm"
@@ -45,6 +46,13 @@ class GetlogCommandOption:
 
 class ThreadCommand:
     create = "create"
+
+class ChannelCommand:
+    topic  = "topic"
+    channel_topic = "channeltopic"
+
+class ChannelCommandOption:
+    channel = "channel"
 
 class TextinputSubCommand:
     send = "send"

@@ -2,9 +2,11 @@
 
 from .start_command import CmpStartCommand
 from .start_send import CmpStartSend
+from .start_channel_topic import CmpStartChannelTopic
 
 from application.commands import (
-    SlashCommand as SlashCommandName
+    SlashCommand as SlashCommandName,
+    ChannelCommand as ChannelCommandName,
 )
 
 from logging import getLogger
@@ -18,3 +20,6 @@ def from_data(rawdata: dict) -> CmpStartCommand:
     if command == SlashCommandName.send:
         _log.debug("command == SlashCommandName.send")
         return CmpStartSend(rawdata)
+    elif command == ChannelCommandName.channel_topic:
+        _log.debug("command == ChannelCommandName.channel_topic")
+        return CmpStartChannelTopic(rawdata)
