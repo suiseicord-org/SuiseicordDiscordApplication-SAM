@@ -45,6 +45,10 @@ Resources:
       CodeUri: LambdaFunction/
       Handler: main.lambda_function
       Runtime: python3.9
+      Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSLambdaVPCAccessExecutionRole
       Events:
         CallbackApi:
           Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api

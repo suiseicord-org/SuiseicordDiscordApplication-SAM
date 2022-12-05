@@ -20,6 +20,7 @@ class SlashCommand:
     getlog  = "getlog"
     user    = "user"
     thread  = "thread"
+    ban     = "ban"
 
 class SendCommand:
     dm = "dm"
