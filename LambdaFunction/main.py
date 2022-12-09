@@ -1,10 +1,35 @@
 #!python3.9
 import os, json, sys
-from application.app import callback
 
 if not __debug__:
     from dotenv import load_dotenv
     load_dotenv('.env')
+
+import boto3
+ssm = boto3.client('ssm')
+
+def get_ssm_param(name: str) -> str:
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ssm.html#SSM.Client.get_parameter
+    response = ssm.get_parameter(
+        Name=name,
+        WithDecryption=True
+    )
+    return response['Parameter']['Value']
+
+APPLICATION_NAME: str = os.getenv('APPLICATION_NAME')
+
+os.environ['DISCORD_TOKEN'] = get_ssm_param(
+    f"/DiscordApplication/{APPLICATION_NAME}/Discord/Token"
+)
+os.environ['APPLICATION_ID'] = get_ssm_param(
+    f"/DiscordApplication/{APPLICATION_NAME}/Discord/ApplicationID"
+)
+os.environ['APPLICATION_PUBLIC_KEY'] = get_ssm_param(
+    f"/DiscordApplication/{APPLICATION_NAME}/Discord/ApplicationPublicKey"
+)
+os.environ['TABLE_PREFIX'] = get_ssm_param(
+    f"/DiscordApplication/{APPLICATION_NAME}/DynamoDB/TablePrefix"
+)
 
 LOGGING_MODE: str = os.getenv('LOGGING_MODE')
 
@@ -32,6 +57,8 @@ handler.setFormatter(fmt)
 handler.setLevel(log_level)
 _log.setLevel(log_level)
 _log.addHandler(handler)
+
+from application.app import callback
 
 def lambda_function(event: dict, context: dict):
     return callback(event, context)
