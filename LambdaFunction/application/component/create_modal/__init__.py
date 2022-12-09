@@ -2,9 +2,11 @@
 
 from .create_modal import CmpCreateModal
 from .create_modal_send import CreateModalSend
+from .create_modal_channel_topic import CreateModalChannelTopic
 
 from application.commands import (
-    SlashCommand as SlashCommandName
+    SlashCommand as SlashCommandName,
+    ChannelCommand as ChannelCommandName,
 )
 
 from logging import getLogger
@@ -17,3 +19,6 @@ def from_data(rawdata: dict) -> CmpCreateModal:
     if command == SlashCommandName.send:
         _log.debug("command == SlashCommandName.send")
         return CreateModalSend(rawdata)
+    elif command == ChannelCommandName.channel_topic:
+        _log.debug("command == ChannelCommandName.channel_topic")
+        return CreateModalChannelTopic(rawdata)

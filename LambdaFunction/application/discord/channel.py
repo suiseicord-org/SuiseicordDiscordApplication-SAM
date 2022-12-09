@@ -125,6 +125,14 @@ class Channel:
         r = route.requets()
         return r
     
+    def modify(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
+        if (not kwargs.get("json_payload", False)) and payload is not None:
+            kwargs["json_payload"] = payload
+        route: Route = Route('PATCH', f"/channels/{self.id}", **kwargs)
+        r = route.requets()
+        return r
+
+    
     def logs(
         self, 
         *, 
