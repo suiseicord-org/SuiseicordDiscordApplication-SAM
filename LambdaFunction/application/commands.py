@@ -23,6 +23,8 @@ class SlashCommand:
     channel = "channel"
     ban     = "ban"
 
+    test    = "test"
+
 class SendCommand:
     dm = "dm"
     channel = "channel"

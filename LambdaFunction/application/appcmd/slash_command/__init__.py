@@ -7,6 +7,8 @@ from .slash_user import SlashUser
 from .thread import from_data as sct_from_data
 from .channel import from_data as scc_from_data
 
+from .slash_test import SlashTest
+
 from logging import getLogger
 _log = getLogger(__name__)
 
@@ -25,4 +27,8 @@ def from_data(rawdata: dict) -> SlashCommand:
         return sct_from_data(rawdata)
     elif name == SlashCommandName.channel:
         _log.debug("name == SlashCommandName.channel")
-        return scc_from_data(rawdata) 
+        return scc_from_data(rawdata)
+    
+    elif name == SlashCommandName.test:
+        _log.debug("name == SlashCommandName.test")
+        return SlashTest(rawdata)
