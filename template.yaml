@@ -11,31 +11,11 @@ Globals:
     Timeout: 30
 
 Parameters:
-  DiscordToken:
-    Description: Discord Token. Must be prefixed with 'Bot' or 'Bearer'.
-    Type: String
-    NoEcho: true
-  ApplicationID:
-    Description: Discord Application ID (Client ID)
-    Type: String
-  ApplicationPublicKey:
-    Description: Discord Application Public Key
+  ApplicationName:
+    Description: ApplicationName.
     Type: String
   LoggingMode:
-    Description: Logging Mode 'DEBUG' or 'INFO'
-    Type: String
-  RdsHost:
-    Description: AWS RDS Instance Endpoint
-    Type: String
-  DatabaseUser:
-    Description: AWS RDS Database User Name
-    Type: String
-  DatabasePassword:
-    Description: AWS RDS Database User Password
-    Type: String
-    NoEcho: true
-  DatabaseName:
-    Description: AWS RDS Database Name
+    Description: Logging Mode 'DEBUG' or 'INFO'.
     Type: String
 
 Resources:
@@ -45,6 +25,10 @@ Resources:
       CodeUri: LambdaFunction/
       Handler: main.lambda_function
       Runtime: python3.9
+      Policies:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        - arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess
       Events:
         CallbackApi:
           Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -53,14 +37,8 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          DISCORD_TOKEN: !Ref DiscordToken
-          APPLICATION_ID: !Ref ApplicationID
-          APPLICATION_PUBLIC_KEY: !Ref ApplicationPublicKey
+          APPLICATION_NAME: !Ref ApplicationName
           LOGGING_MODE: !Ref LoggingMode
-          RDS_HOST: !Ref RdsHost
-          DB_USER: !Ref DatabaseUser
-          DB_PASSWORD: !Ref DatabasePassword
-          DB_NAME: !Ref DatabaseName
 
 #Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
