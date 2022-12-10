@@ -11,13 +11,10 @@
 - 通知街#7275
 
 ## 環境変数
-* `DISCORD_TOKEN`
-* `APPLICATION_ID`
-* `APPLICATION_PUBLIC_KEY`
-* `RDS_HOST`
-* `DB_USER`
-* `DB_PASSWORD`
-* `DB_NAME`
+* `APPLICATION_NAME`
+    - `General`
+    - `Test`
+* `LOGGING_MODE`
 
 ## 実装済みコマンド
 
@@ -31,3 +28,8 @@
         - サーバーメンバーの情報を表示する。
     2. id
         - サーバーの所属に関わらず、ユーザーIDから検索し表示する。
+3. /channel
+    1. topic
+        - チャンネルトピックを編集する。
+99. /test
+    * テスト用コマンド。
