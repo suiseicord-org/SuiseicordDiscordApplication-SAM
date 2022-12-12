@@ -41,6 +41,26 @@ class UserCommand:
 class UserCommandOption:
     target  = 'target'
 
+class BanCommand:
+    id      = 'id'
+    mention = 'mention'
+
+class BanCommandOption:
+    target = 'target'
+    reason = 'reason'
+    delete_message_days = 'delete-message-days'
+    custom_reason = 'custom-reason'
+    dm = 'dm'
+    dm_attachments = 'dm_attachments'
+    attachments = 'attachments'
+    accept_count = 'accept-count'
+    cancel_count = 'cancel-count'
+    dm_text = 'dm-text'
+    mentions = 'mentions'
+
+    accept_title = '必要承認人数'
+    cancel_title = '必要中止人数'
+
 class GetlogCommand:
     dm = "dm"
 
@@ -59,6 +79,8 @@ class ChannelCommandOption:
 
 class TextinputSubCommand:
     send = "send"
+    channel_topic = "channeltopic"
+    ban = "ban"
     # suiseicord happi
     happi = "happi"
 

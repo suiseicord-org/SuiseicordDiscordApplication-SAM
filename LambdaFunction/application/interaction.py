@@ -469,3 +469,9 @@ def parse_to_dict(options: list[ApplicationCommandInteractionDataOption]) -> dic
     for opt in options:
        result[opt["name"]] = (opt["type"], opt.get("value", opt.get("options")))
     return result 
+
+def parse_to_dict_value(options: list[ApplicationCommandInteractionDataOption]) -> dict[str, Any]:
+    result = {}
+    for opt in options:
+       result[opt["name"]] = opt.get("value", opt.get("options"))
+    return result 

@@ -1,8 +1,8 @@
 #!python3.9
-
 from .create_modal import CmpCreateModal
 from .create_modal_send import CreateModalSend
 from .create_modal_channel_topic import CreateModalChannelTopic
+from .create_modal_ban import CreateModalBan
 
 from application.commands import (
     SlashCommand as SlashCommandName,
@@ -22,3 +22,6 @@ def from_data(rawdata: dict) -> CmpCreateModal:
     elif command == ChannelCommandName.channel_topic:
         _log.debug("command == ChannelCommandName.channel_topic")
         return CreateModalChannelTopic(rawdata)
+    elif command == SlashCommandName.ban:
+        _log.debug("command == SlashCommandName.ban")
+        return CreateModalBan(rawdata)

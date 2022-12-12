@@ -4,6 +4,7 @@ from application.commands import SlashCommand as SlashCommandName
 from .slash_command import SlashCommand
 from .slash_send import SlashSend
 from .slash_user import SlashUser
+from .slash_ban import SlashBan
 from .thread import from_data as sct_from_data
 from .channel import from_data as scc_from_data
 
@@ -28,6 +29,9 @@ def from_data(rawdata: dict) -> SlashCommand:
     elif name == SlashCommandName.channel:
         _log.debug("name == SlashCommandName.channel")
         return scc_from_data(rawdata)
+    elif name == SlashCommandName.ban:
+        _log.debug("name == SlashCommandName.ban")
+        return SlashBan(rawdata)
     
     elif name == SlashCommandName.test:
         _log.debug("name == SlashCommandName.test")

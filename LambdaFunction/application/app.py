@@ -41,7 +41,7 @@ def default_error(error_msg: Optional[str] = None) -> dict:
     content = "ERROR;\nPlease report bot operator or server admins."
     if error_msg:
         content += f"\ndetail:\n```\n{error_msg}\n```"
-    _log.warning(content)
+    _log.warning(content.replace("\n", "\r"))
     payload = {
         "type" : InteractionResponseType.channel_message.value,
         "data" : {
@@ -111,6 +111,8 @@ def callback(event: dict, context: dict):
         try:
             obj: Optional[Interaction] = from_data(req)
         except Exception as e:
+            t = traceback.format_exc()
+            _log.critical(t.replace('\n', '\r'))
             return default_error()
         _log.info(f"obj: {str(obj)}")
         if obj:
@@ -130,7 +132,7 @@ def callback(event: dict, context: dict):
                 obj.error(str(e))
             except Exception as e:
                 t = traceback.format_exc()
-                _log.error(t.replace('\n', '\r'))
+                _log.critical(t.replace('\n', '\r'))
                 obj.error()
         else:
             return default_error("This command is not defined")

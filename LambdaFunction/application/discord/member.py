@@ -21,15 +21,33 @@ from .http import Route
 from logging import getLogger
 _log = getLogger(__name__)
 
-class PartiaMember(PartiaUser):
+class BaseMember:
+    def __init__(self, _id: Snowflake, guild_id: Snowflake) -> None:
+        self.id: Snowflake = _id
+        self.guild_id: Snowflake = guild_id
+    
+    def ban(self, delete_message_days: int = 1, reason: Optional[str] = None) -> requests.Response:
+        kwargs = {}
+        kwargs["json_payload"] = {
+            "delete_message_days" : delete_message_days
+        }
+        kwargs["reason"] = reason
+        route = Route(
+            'PUT',
+            f'/guilds/{self.guild_id}/bans/{self.id}',
+            **kwargs
+        )
+        r = route.requets()
+        return r
+
+class PartiaMember(PartiaUser, BaseMember):
     def __init__(self, payload: PartialMemberPayload, guild_id: Snowflake):
         _log.debug(payload)
-        super().__init__(payload["user"])
+        PartiaUser.__init__(self, payload["user"])
+        BaseMember.__init__(self, payload["user"]["id"], guild_id)
         self.joind_at: datetime.datetime = parse_time(payload["joined_at"])
         self.deaf: bool = payload.get("deaf", False)
         self.mute: bool = payload.get("mute", False)
-
-        self.guild_id: Snowflake = guild_id
 
         role_ids = set([int(i) for i in payload["roles"]])
         role_ids.add(int(guild_id))
@@ -52,6 +70,8 @@ class Member(PartiaMember, User):
         self.permissions: Optional[str] = payload.get("permissions")
 
         self.roles: list[Role] = []
+
+        self.__owner: Optional[bool] = None
     
     @property
     def avatar_url(self) -> str:
@@ -59,6 +79,20 @@ class Member(PartiaMember, User):
             return ImageBaseUrl + f"guilds/{self.guild_id}/users/{self.id}/avatars/{self._guild_avatar_hash}.png"
         return super().avatar_url
     
+    @property
+    def is_owner(self) -> Optional[bool]:
+        if self.__owner is None:
+            route = Route('GET', f'/guilds/{self.guild_id}')
+            r = route.requets()
+            if r.ok:
+                _data = r.json()
+                _owner_id = _data['owner_id']
+                if int(self.id) == int(_owner_id):
+                    self.__owner = True
+                else:
+                    self.__owner = False
+        return self.__owner
+
     def set_guild_roles(self):
         route = Route('GET', f'/guilds/{self.guild_id}/roles')
         r = route.requets()

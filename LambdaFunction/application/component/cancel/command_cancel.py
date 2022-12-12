@@ -1,6 +1,6 @@
 #!python3.9
 
-from .component import Component
+from ..component import Component
 
 from application.mytypes.components import (
     Component as ComponentPayload

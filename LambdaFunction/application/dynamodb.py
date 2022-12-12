@@ -41,4 +41,4 @@ class SettingDynamoDB(DynamoDB):
             Key = keys
         )
         _log.debug(res)
-        return res["Item"]
+        return res.get("Item", dict())

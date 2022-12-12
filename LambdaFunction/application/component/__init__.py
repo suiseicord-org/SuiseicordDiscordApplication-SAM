@@ -5,7 +5,7 @@ from application.commands import (
 )
 
 from .component import Component
-from .command_cancel import CmpCommandCancel
+from .cancel import from_data as cc_from_data
 from .start_command import from_data as csc_from_data
 from .create_modal import from_data as ccm_from_data
 from .form import from_data as cf_from_data
@@ -20,7 +20,7 @@ def from_data(rawdata: dict) -> Component:
     _log.debug("command: {}".format(command))
     if command == CommandsName.cancel:
         _log.debug("command == CommandsName.cancel")
-        return CmpCommandCancel(rawdata)
+        return cc_from_data(rawdata)
     elif command == CommandsName.start:
         _log.debug("command == CommandsName.start")
         return csc_from_data(rawdata)

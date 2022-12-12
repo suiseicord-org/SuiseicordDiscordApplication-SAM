@@ -1,13 +1,13 @@
 #!python3.9
 
 from application.commands import (
-    TextinputSubCommand as TextinputSubCommandName,
-    ChannelCommand as ChannelCommandName
+    TextinputSubCommand as TextinputSubCommandName
 )
 
 from .textinput import ModalTextInput
 from .textinput_send import TextInputSend
 from .textinput_channel_topic import TextInputChannelTopic
+from .textinput_ban import TextInputBan
 
 from .suiseicord_happi import from_data as tsh_from_data
 
@@ -21,9 +21,12 @@ def from_data(rawdata: dict) -> ModalTextInput:
     if sub_command == TextinputSubCommandName.send:
         _log.debug("sub_command == TextinputSubCommandName.send")
         return TextInputSend(rawdata)
-    elif sub_command == ChannelCommandName.channel_topic:
-        _log.debug("sub_command == ChannelCommandName.channel_topic")
+    elif sub_command == TextinputSubCommandName.channel_topic:
+        _log.debug("sub_command == TextinputSubCommandName.channel_topic")
         return TextInputChannelTopic(rawdata)
+    elif sub_command == TextinputSubCommandName.ban:
+        _log.debug("sub_command == TextinputSubCommandName.ban")
+        return TextInputBan(rawdata)
     # elif sub_command == TextinputSubCommandName.happi:
     #     _log.debug("sub_command == TextinputSubCommandName.happi")
     #     return tsh_from_data(rawdata)

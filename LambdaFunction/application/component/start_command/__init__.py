@@ -3,6 +3,7 @@
 from .start_command import CmpStartCommand
 from .start_send import CmpStartSend
 from .start_channel_topic import CmpStartChannelTopic
+from .start_ban import CmpStartBan
 
 from application.commands import (
     SlashCommand as SlashCommandName,
@@ -23,3 +24,6 @@ def from_data(rawdata: dict) -> CmpStartCommand:
     elif command == ChannelCommandName.channel_topic:
         _log.debug("command == ChannelCommandName.channel_topic")
         return CmpStartChannelTopic(rawdata)
+    elif command == SlashCommandName.ban:
+        _log.debug("command == SlashCommandName.ban")
+        return CmpStartBan(rawdata)
