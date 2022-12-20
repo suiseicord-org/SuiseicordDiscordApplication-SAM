@@ -19,5 +19,4 @@ def from_data(rawdata: dict) -> Component:
         if command == SlashCommandName.ban:
             _log.debug("command == SlashCommandName.ban")
             return CmpCommandCancelBan(rawdata)
-    else:
-        return CmpCommandCancel(rawdata)
+    return CmpCommandCancel(rawdata)
