@@ -45,7 +45,7 @@ class SlashBan(SlashCommand):
         self.ban_permission_check: bool = True
 
     def run(self) -> None:
-        self.deferred_channel_message()
+        # self.deferred_channel_message()
         super().run()
         self.target: Optional[Union[Member, User]] = None
         if self.sub_command_name == BanCommandName.mention:
@@ -223,7 +223,11 @@ class SlashBan(SlashCommand):
                             "type" : ComponentType.action_row.value,
                             "components" : self._create_components_button()
                         }
-                    ]
+                    ],
+                    "allowed_mentions" : {
+                        "parse" : ["roles", "users"],
+                        #"roles" : [str(i) for i in self.mentions]
+                    }
                 }
             }
         r: Response = self.callback(self.payload)
@@ -387,6 +391,8 @@ class SlashBan(SlashCommand):
         embed["color"] = CommandColor.mint.value
 
         # attachments
+        if self.resolved is None:
+            return embed
         attachments: Optional[dict] = self.resolved.get("attachments")
         if attachments is not None:
             index: int = 0

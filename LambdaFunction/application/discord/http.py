@@ -104,7 +104,7 @@ class Route:
             json = simple_payload
         )
         _log.info("status_code: {}".format(res.status_code))
-        _log.debug("response: {}".format(res.text))
+        _log.info("response: {}".format(res.text))
 
         if _raise:
             res.raise_for_status()
