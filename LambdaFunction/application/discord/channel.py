@@ -55,7 +55,7 @@ class InteractionPartialChannel(PartialChannel):
     def __init__(self, payload: InteractionPartialChannelPayload):
         super().__init__(payload)
         self.permissions: int = int(payload["permissions"])
-        self.parent_id: Snowflake = payload["parent_id"]
+        self.parent_id: Optional[Snowflake] = payload.get("parent_id")
 
 class Channel:
     def __init__(self, _id: Optional[Snowflake] = None, payload: Optional[ChannelPayload] = None):
