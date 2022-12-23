@@ -11,6 +11,7 @@ class Commands:
     modal = "modal"
     textinput = "textinput"
     form = "form"
+    role = "role"
     
     #suiseicord happi
     happi = "happi"
@@ -86,6 +87,12 @@ class TextinputSubCommand:
 
 class FormCategory:
     vsong_award = "vsongaward"
+
+class RoleCommand:
+    add = "add"
+    update = "update"
+    button = "button"
+    select = "select"
 
 
 class VSongAwardYear:

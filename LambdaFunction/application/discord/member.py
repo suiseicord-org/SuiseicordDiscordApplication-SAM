@@ -2,6 +2,7 @@
 import datetime
 from typing import Optional, Union
 import requests
+from copy import deepcopy
 
 from application.mytypes.member import (
     PartialMember as PartialMemberPayload,
@@ -52,6 +53,61 @@ class PartiaMember(PartiaUser, BaseMember):
         role_ids = set([int(i) for i in payload["roles"]])
         role_ids.add(int(guild_id))
         self._role_ids: list[int] = list(role_ids)
+    
+    def _update_role(self, new_roles: list[int], reason: Optional[str] = None) -> requests.Response:
+        kwargs = {}
+        kwargs["json_payload"] = {
+            "roles" : new_roles
+        }
+        kwargs["reason"] = reason
+        route: Route = Route(
+            'PATCH',
+            f'/guilds/{self.guild_id}/members/{self.id}',
+            **kwargs
+        )
+        r = route.requets()
+        if r.ok:
+            self._role_ids = new_roles
+        return r
+
+    def add_role(self, role_id: int, reason: Optional[str] = None) -> requests.Response:
+        _log.info("Add Role ID; {}".format(role_id))
+        new_roles = deepcopy(self._role_ids)
+        new_roles.append(role_id)
+        _log.debug("New Role IDs: {}".format(new_roles))
+        return self._update_role(
+            new_roles=new_roles,
+            reason=reason
+        )
+
+    def remove_role(self, role_id: int, reason: Optional[str] = None) -> requests.Response:
+        _log.info("Add Role ID; {}".format(role_id))
+        new_roles = deepcopy(self._role_ids)
+        new_roles.remove(role_id)
+        _log.debug("New Role IDs: {}".format(new_roles))
+        return self._update_role(
+            new_roles=new_roles,
+            reason=reason
+        )
+    
+    def update_roles(
+        self,
+        add_roles: list[int] = [],
+        remove_roles: list[int] = [],
+        reason: Optional[str] = None
+    ) -> requests.Response:
+        _log.info("Add Role IDs: {}".format(add_roles))
+        _log.info("Remove Role IDs: {}".format(remove_roles))
+        current_roles = set(self._role_ids)
+        new_roles = list(current_roles.union(add_roles).difference(remove_roles))
+        _log.debug("New Role IDs: {}".format(new_roles))
+        return self._update_role(
+            new_roles=new_roles,
+            reason=reason
+        )
+
+
+        
 
 class Member(PartiaMember, User):
     def __init__(
