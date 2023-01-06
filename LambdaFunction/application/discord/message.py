@@ -48,7 +48,7 @@ class MessageReference:
             return None
         if self.guild_id is None:
             return DiscordUrl + f'/@me/{self.channel_id}/{self.message_id}'
-        return DiscordUrl + f'/{self.guild_id}/{self.channel_id}/{self.message_id}'
+        return DiscordUrl + f'/channels/{self.guild_id}/{self.channel_id}/{self.message_id}'
 
 class PartiaMessage:
     def __init__(self, ch_id: Snowflake, msg_id: Snowflake):
