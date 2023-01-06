@@ -1,4 +1,4 @@
 #!python3.9
-
-ApiBaseUrl = "https://discord.com/api/v10"
+DiscordUrl = "https://discord.com"
+ApiBaseUrl = DiscordUrl + "/api/v10"
 ImageBaseUrl = "https://cdn.discordapp.com/"

@@ -70,6 +70,7 @@ class Interaction:
             self.channel: Channel               = Channel(self._channel_id)
             self.commander = Member(d, self._guild_id) \
                 if (d := rawdata.get("member")) is not None else User(rawdata["user"])
+            self._app_permissions: Optional[str] = rawdata.get("app_permissions")
             self.locale: str                    = rawdata['locale']
             self.guild_locale: Optional[str]    = rawdata.get('guild_locale')
 

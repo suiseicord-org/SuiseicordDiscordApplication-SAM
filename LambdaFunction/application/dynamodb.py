@@ -2,6 +2,8 @@
 import os
 import boto3
 
+from typing import Optional
+
 from logging import getLogger
 _log = getLogger(__name__)
 
@@ -25,20 +27,22 @@ class DynamoDB:
     
 
 class SettingDynamoDB(DynamoDB):
-    def __init__(self, command: str, target_id: int = 0) -> None:
+    def __init__(self) -> None:
         table_name: str = "CommandSetting"
         super().__init__(table_name)
-        self.command: str = command
-        self.target_id: int = int(target_id)
 
-    def get_item(self):
+    def get_item(self, command: str, target_id: int = 0) -> dict:
         keys: dict = {
-            "name" : self.command,
-            "id" : self.target_id
+            "name" : command,
+            "id" : int(target_id)
         }
         _log.debug(keys)
         res = self.table.get_item(
             Key = keys
         )
         _log.debug(res)
-        return res.get("Item", dict())
+        data = res.get("Item", {})
+
+        if data.get('enable', False):
+            return data
+        return {}

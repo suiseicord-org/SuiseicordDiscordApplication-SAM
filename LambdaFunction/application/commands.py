@@ -1,35 +1,31 @@
 #!python3.9
 
-
-
-from ctypes.wintypes import tagRECT
-
-
 class Commands:
-    cancel = "cansell"
-    start = "start"
-    modal = "modal"
-    textinput = "textinput"
-    form = "form"
-    role = "role"
+    cancel = 'cansell'
+    start = 'start'
+    modal = 'modal'
+    textinput = 'textinput'
+    form = 'form'
+    role = 'role'
     
     #suiseicord happi
-    happi = "happi"
+    happi = 'happi'
 
+# SlashCommands
 class SlashCommand:
-    send    = "send"
-    getlog  = "getlog"
-    user    = "user"
-    thread  = "thread"
-    channel = "channel"
-    ban     = "ban"
+    send    = 'send'
+    getlog  = 'getlog'
+    user    = 'user'
+    thread  = 'thread'
+    channel = 'channel'
+    ban     = 'ban'
 
-    test    = "test"
+    test    = 'test'
 
 class SendCommand:
-    dm = "dm"
-    channel = "channel"
-    happi = "happi_announce"
+    dm = 'dm'
+    channel = 'channel'
+    happi = 'happi_announce'
 
 class SendCommandOption:
     target          = 'target'
@@ -63,51 +59,58 @@ class BanCommandOption:
     cancel_title = '必要中止人数'
 
 class GetlogCommand:
-    dm = "dm"
+    dm = 'dm'
 
 class GetlogCommandOption:
     target = 'target'
 
 class ThreadCommand:
-    create = "create"
+    create = 'create'
 
 class ChannelCommand:
-    topic  = "topic"
-    channel_topic = "channeltopic"
+    topic  = 'topic'
+    channel_topic = 'channeltopic'
 
 class ChannelCommandOption:
-    channel = "channel"
+    channel = 'channel'
 
+# Message Command
+class MessageCommand:
+    save   = 'save'
+    report = 'report'
+
+# Text Input Command
 class TextinputSubCommand:
-    send = "send"
-    channel_topic = "channeltopic"
-    ban = "ban"
+    send = 'send'
+    channel_topic = 'channeltopic'
+    ban = 'ban'
     # suiseicord happi
-    happi = "happi"
+    happi = 'happi'
 
 class FormCategory:
-    vsong_award = "vsongaward"
+    vsong_award = 'vsongaward'
 
 class RoleCommand:
-    add = "add"
-    update = "update"
-    button = "button"
-    select = "select"
+    add = 'add'
+    update = 'update'
+    button = 'button'
+    select = 'select'
 
 
 class VSongAwardYear:
-    vsa_2022 = "2022"
+    vsa_2022 = '2022'
 
+# Suiseicord Happi
 class HappiCommand:
-    announce = "announce"
-    report   = "payreport"
-    check    = "paycheck"
+    announce = 'announce'
+    report   = 'payreport'
+    check    = 'paycheck'
 
 class HappiPayreportAction:
-    bank        = "bank"
-    paypal_jp   = "paypal_jp"
-    paypal_en   = "paypal_en"
+    bank        = 'bank'
+    paypal_jp   = 'paypal_jp'
+    paypal_en   = 'paypal_en'
 
 class HappiAnnounceLanguage:
-    jp = "jp"
-    en = "en"
+    jp = 'jp'
+    en = 'en'

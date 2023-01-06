@@ -33,6 +33,14 @@ class PartiaUser:
     @property
     def created_at(self) -> datetime.datetime:
         return snowflake_time(self.id)
+    
+    @property
+    def color(self) -> int:
+        return 0
+    
+    @property
+    def mention(self) -> str:
+        return f'<@{self.id}>'
 
 class User(PartiaUser):
     def __init__(self, payload: UserPayload):

@@ -30,7 +30,7 @@ from .member import Member, UserWithMember
 from .user import User
 from .emoji import PartialEmoji
 from .embed import Embed
-from .channel import ChannelType
+from .channel import ChannelType, ThreadChannel
 from .components import Component
 from .interaction import MessageInteraction
 from .sticker import StickerItem
@@ -106,6 +106,7 @@ class _MessageOptional(TypedDict, total=False):
     sticker_items: List[StickerItem]
     referenced_message: Optional[Message]
     interaction: MessageInteraction
+    thread: ThreadChannel
     components: List[Component]
 
 
