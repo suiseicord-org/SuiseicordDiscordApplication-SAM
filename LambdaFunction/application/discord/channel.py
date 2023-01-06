@@ -28,6 +28,7 @@ from application.mytypes.message import (
     Attachment as AttachmentPayload
 )
 
+from .exception import Forbidden
 from .http import Route
 
 from logging import getLogger
@@ -76,6 +77,8 @@ class Channel:
 
         if not r.ok:
             _log.error(r.text)
+            if r.status_code == 403:
+                raise Forbidden(r, 'Missing acceses.')
             return r
 
         _payload: ChannelPayload = r.json()
@@ -117,6 +120,17 @@ class Channel:
         self.flags: Optional[int] = _payload.get("flags")
         self._last_pin_timestamp: str = _payload.get("last_pin_timestamp")
         return 
+    
+    @property
+    def guild_id(self) -> Optional[Snowflake]:
+        if not hasattr(self, '_guild_id'):
+            self._get()
+        
+        return self._guild_id
+    
+    @property
+    def mention(self) -> str:
+        return f"<#{self.id}>"
     
     def send(self, payload: Optional[dict] = None, **kwargs) -> requests.Response:
         if (not kwargs.get("json_payload", False)) and payload is not None:

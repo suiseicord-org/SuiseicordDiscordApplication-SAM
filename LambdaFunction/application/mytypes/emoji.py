@@ -27,9 +27,10 @@ from .snowflake import Snowflake, SnowflakeList
 from .user import User
 
 
-class PartialEmoji(TypedDict):
+class PartialEmoji(TypedDict, total=False):
     id: Optional[Snowflake]
     name: Optional[str]
+    animated: bool
 
 
 class Emoji(PartialEmoji, total=False):
@@ -37,7 +38,6 @@ class Emoji(PartialEmoji, total=False):
     user: User
     require_colons: bool
     managed: bool
-    animated: bool
     available: bool
 
 

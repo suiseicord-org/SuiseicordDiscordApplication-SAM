@@ -28,6 +28,8 @@ from typing import List, Literal, TypedDict, Union
 from .snowflake import Snowflake
 from .user import User
 
+StickerType = Literal[1, 2]
+
 StickerFormatType = Literal[1, 2, 3]
 
 

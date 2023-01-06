@@ -34,15 +34,15 @@ class SettingDynamoDB(DynamoDB):
     def get_item(self, command: str, target_id: int = 0) -> dict:
         keys: dict = {
             "name" : command,
-            "id" : target_id
+            "id" : int(target_id)
         }
         _log.debug(keys)
         res = self.table.get_item(
             Key = keys
         )
         _log.debug(res)
-        data = res.get("Item", dict())
+        data = res.get("Item", {})
 
         if data.get('enable', False):
             return data
-        return dict()
+        return {}
