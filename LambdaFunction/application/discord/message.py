@@ -104,7 +104,7 @@ class Message(PartiaMessage):
             guild = '@me'
         else:
             guild = self.guild_id
-        return DiscordUrl + f'/{guild}/{self.channel.id}/{self.id}'
+        return DiscordUrl + f'/channels/{guild}/{self.channel.id}/{self.id}'
 
     
     def to_embeds(
