@@ -128,6 +128,10 @@ class File:
     @filename.setter
     def filename(self, value: str) -> None:
         self._filename, self.spoiler = _strip_spoiler(value)
+    
+    @property
+    def embed_url(self) -> str:
+        return f"attachment://{self.filename}"
 
     def reset(self, *, seek: Union[int, bool] = True) -> None:
         # The `seek` parameter is needed because

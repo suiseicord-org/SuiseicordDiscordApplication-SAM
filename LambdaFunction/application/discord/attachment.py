@@ -71,6 +71,7 @@ class Attachment:
 
         if resp.status_code == requests.codes.ok:
             self.opened = True
+            self._closer = resp.close
             return resp.raw
         elif resp.status_code == 404:
             resp.close()
@@ -88,6 +89,7 @@ class Attachment:
         try:
             _log.info("Close http file; url: {}".format(self.url))
             self._closer()
+            self._closer = None
             _log.debug("Closed.")
             self.opened = False
             return True

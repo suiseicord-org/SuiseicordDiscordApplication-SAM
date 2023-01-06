@@ -8,12 +8,14 @@ from urllib.parse import (
 )
 
 from typing import (
-    Optional
+    Optional,
+    Union
 )
 
 from . import ApiBaseUrl
 from .attachment import Attachment
 from .file import File
+from .sticker import Sticker
 
 if not __debug__:
     from dotenv import load_dotenv
@@ -33,7 +35,7 @@ class Route:
         query: Optional[dict[str, str]] = None,
         json_payload: Optional[dict] = None,
         files: Optional[list[File]] = None,
-        attachments: Optional[list[Attachment]] = None,
+        attachments: Optional[list[Union[Attachment, Sticker]]] = None,
         reason: Optional[str] = None,
         **kwargs
     ):
@@ -42,7 +44,7 @@ class Route:
         self.query: Optional[dict[str, str]] = query
         self.json_payload: Optional[dict] = json_payload
         self.files: Optional[list[File]] = files
-        self.attachments: Optional[list[Attachment]] = attachments
+        self.attachments: Optional[list[Union[Attachment, Sticker]]] = attachments
         self.reason: Optional[str] = reason
 
     def requets(self, *, appcmd_response: bool = False, _raise: bool = False) -> requests.Response:
@@ -95,6 +97,7 @@ class Route:
 
         _log.info("method: '{0}'; url: '{1}'; params: {2};".format(self.method, url, str(self.query)))
         _log.debug("files: {}".format(files))
+        _log.debug("simple_payload: {}".format(simple_payload))
         res: requests.Response = requests.request(
             method=self.method,
             url = url,

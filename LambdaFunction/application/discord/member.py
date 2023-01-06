@@ -148,6 +148,18 @@ class Member(PartiaMember, User):
                 else:
                     self.__owner = False
         return self.__owner
+    
+    @property
+    def color(self) -> int:
+        if len(self.roles) < 1:
+            _log.info("Loadding guild roles.")
+            self.set_guild_roles()
+        
+        for role in self.roles:
+            if role.color > 0:
+                return role.color
+        
+        return 0
 
     def set_guild_roles(self):
         route = Route('GET', f'/guilds/{self.guild_id}/roles')
