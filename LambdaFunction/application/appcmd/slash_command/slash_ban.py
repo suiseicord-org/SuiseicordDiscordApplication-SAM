@@ -77,12 +77,12 @@ class SlashBan(SlashCommand):
         _log.debug("custom_reason: {}".format(self.custom_reason))
 
         # get setting.
-        self.db = SettingDynamoDB(
+        self.db = SettingDynamoDB()
+        _log.debug("dynamoDB get_item()")
+        data: dict = self.db.get_item(
             command=self.command,
             target_id=self._guild_id
         )
-        _log.debug("dynamoDB get_item()")
-        data: dict = self.db.get_item()
 
         self.delete_message_days: int = self.options.get(
             BanCommandOptionName.delete_message_days,

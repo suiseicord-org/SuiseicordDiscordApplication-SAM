@@ -25,16 +25,14 @@ class DynamoDB:
     
 
 class SettingDynamoDB(DynamoDB):
-    def __init__(self, command: str, target_id: int = 0) -> None:
+    def __init__(self) -> None:
         table_name: str = "CommandSetting"
         super().__init__(table_name)
-        self.command: str = command
-        self.target_id: int = int(target_id)
 
-    def get_item(self):
+    def get_item(self, command: str, target_id: int = 0):
         keys: dict = {
-            "name" : self.command,
-            "id" : self.target_id
+            "name" : command,
+            "id" : target_id
         }
         _log.debug(keys)
         res = self.table.get_item(
