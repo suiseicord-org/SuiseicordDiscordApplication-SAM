@@ -2,7 +2,7 @@
 from requests import Response
 from .slash_channel import SlashChannel
 from application.commands import (
-    ChannelCommandOption as ChannelCommandOptionName
+    SlashChannelCommandOption as SlashChannelCommandOptionName
 )
 from application.components import Button, CustomID
 from application.discord.channel import Channel
@@ -27,7 +27,7 @@ class SlashChannelTopic(SlashChannel):
         self.resolved: dict = self._data['resolved']
         _targets = get_options(
             self.sub_command['options'],
-            name = ChannelCommandOptionName.channel
+            name = SlashChannelCommandOptionName.channel
         )
         self.target_id: Snowflake = _targets[0]['value']
         self.channel_resolved: ChannelPayload = self.resolved["channels"][self.target_id]

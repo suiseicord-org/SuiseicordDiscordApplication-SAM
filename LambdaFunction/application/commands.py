@@ -22,27 +22,27 @@ class SlashCommand:
 
     test    = 'test'
 
-class SendCommand:
+class SlashSendCommand:
     dm = 'dm'
     channel = 'channel'
     happi = 'happi_announce'
 
-class SendCommandOption:
+class SlashSendCommandOption:
     target          = 'target'
     attachments     = 'attachments'
 
-class UserCommand:
+class SlashUserCommand:
     id      = 'id'
     mention = 'mention'
 
-class UserCommandOption:
+class SlashUserCommandOption:
     target  = 'target'
 
-class BanCommand:
+class SlashBanCommand:
     id      = 'id'
     mention = 'mention'
 
-class BanCommandOption:
+class SlashBanCommandOption:
     target = 'target'
     reason = 'reason'
     delete_message_days = 'delete-message-days'
@@ -58,20 +58,20 @@ class BanCommandOption:
     accept_title = '必要承認人数'
     cancel_title = '必要中止人数'
 
-class GetlogCommand:
+class SlashGetlogCommand:
     dm = 'dm'
 
-class GetlogCommandOption:
+class SlashGetlogCommandOption:
     target = 'target'
 
-class ThreadCommand:
+class SlashThreadCommand:
     create = 'create'
 
-class ChannelCommand:
+class SlashChannelCommand:
     topic  = 'topic'
     channel_topic = 'channeltopic'
 
-class ChannelCommandOption:
+class SlashChannelCommandOption:
     channel = 'channel'
 
 # Message Command

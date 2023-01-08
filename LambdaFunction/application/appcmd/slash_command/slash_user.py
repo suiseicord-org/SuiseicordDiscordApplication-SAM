@@ -14,8 +14,8 @@ from application.discord.user import User
 
 from application.commands import (
     SlashCommand as SlashCommandName,
-    UserCommand as UserCommandName,
-    UserCommandOption as UserCommandOptionName
+    SlashUserCommand as SlashUserCommandName,
+    SlashUserCommandOption as SlashUserCommandOptionName
 )
 from application.components import Button, CustomID
 from application.enums import (
@@ -37,7 +37,7 @@ class SlashUser(SlashCommand):
         self.sub_command_name: str = self.sub_command['name']
         _targets = get_options(
             self.sub_command['options'],
-            name = UserCommandOptionName.target
+            name = SlashUserCommandOptionName.target
         )
         self.target_id: Snowflake = _targets[0]['value']
 
@@ -45,12 +45,12 @@ class SlashUser(SlashCommand):
         self.deferred_channel_message()
         super().run()
         self.target: Optional[Union[Member, User]] = None
-        if self.sub_command_name == UserCommandName.mention:
+        if self.sub_command_name == SlashUserCommandName.mention:
             resolved: Optional[dict] = self._data.get('resolved')
             member_payload = resolved["members"][self.target_id]
             member_payload["user"] = resolved["users"][self.target_id]
             self.target = Member(member_payload, self._guild_id)
-        elif self.sub_command_name == UserCommandName.id:
+        elif self.sub_command_name == SlashUserCommandName.id:
             self.target = get_member_or_user(
                 self.target_id,
                 self._guild_id
