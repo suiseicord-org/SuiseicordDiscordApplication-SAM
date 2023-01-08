@@ -79,6 +79,9 @@ class MessageCommand:
     save   = 'save'
     report = 'report'
 
+class UserCommand:
+    info   = 'user-info'
+
 # Text Input Command
 class TextinputSubCommand:
     send = 'send'
