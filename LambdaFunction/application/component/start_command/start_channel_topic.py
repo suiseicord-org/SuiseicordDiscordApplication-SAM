@@ -10,8 +10,8 @@ from .start_command import CmpStartCommand
 
 from application.utils import isotimestamp
 from application.commands import (
-    SendCommand as SendCommandName,
-    SendCommandOption as SendCommandOptionName
+    SlashSendCommand as SlashSendCommandName,
+    SlashSendCommandOption as SlashSendCommandOptionName
 )
 from application.components import CustomID
 from application.enums import (

@@ -3,6 +3,7 @@ from application.enums import ApplicationCommandType
 
 from .application_command import ApplicationCommand
 from .slash_command import from_data as sc_from_data
+from .user_command import from_data as uc_from_data
 from .message_command import from_data as mc_from_data
 
 from logging import getLogger
@@ -18,7 +19,7 @@ def from_data(rawdata: dict) -> ApplicationCommand:
         return sc_from_data(rawdata)
     elif _type == ApplicationCommandType.user:
         _log.debug("_type == ApplicationCommandType.user")
-        pass
+        return uc_from_data(rawdata)
     elif _type == ApplicationCommandType.message:
         _log.debug("_type == ApplicationCommandType.message")
         return mc_from_data(rawdata)

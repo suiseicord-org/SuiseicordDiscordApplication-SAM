@@ -6,7 +6,7 @@ from .create_modal_ban import CreateModalBan
 
 from application.commands import (
     SlashCommand as SlashCommandName,
-    ChannelCommand as ChannelCommandName,
+    SlashChannelCommand as SlashChannelCommandName,
 )
 
 from logging import getLogger
@@ -19,7 +19,7 @@ def from_data(rawdata: dict) -> CmpCreateModal:
     if command == SlashCommandName.send:
         _log.debug("command == SlashCommandName.send")
         return CreateModalSend(rawdata)
-    elif command == ChannelCommandName.channel_topic:
+    elif command == SlashChannelCommandName.channel_topic:
         _log.debug("command == ChannelCommandName.channel_topic")
         return CreateModalChannelTopic(rawdata)
     elif command == SlashCommandName.ban:

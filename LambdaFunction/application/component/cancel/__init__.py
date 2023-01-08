@@ -4,8 +4,7 @@ from .command_cancel import CmpCommandCancel
 from .command_cancel_ban import CmpCommandCancelBan
 
 from application.commands import (
-    SlashCommand as SlashCommandName,
-    ChannelCommand as ChannelCommandName,
+    SlashCommand as SlashCommandName
 )
 
 from logging import getLogger
