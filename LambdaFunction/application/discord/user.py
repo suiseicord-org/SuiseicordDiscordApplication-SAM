@@ -28,7 +28,11 @@ class PartiaUser:
 
     @property
     def avatar_url(self) -> str:
-        return ImageBaseUrl + f"avatars/{self.id}/{self._avatar_hash}.png"
+        return self.user_avatar_url
+    
+    @property
+    def user_avatar_url(self) -> str:
+        return ImageBaseUrl + f"avatars/{self.id}/{self._avatar_hash}.png?size=512"
     
     @property
     def created_at(self) -> datetime.datetime:

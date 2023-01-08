@@ -131,9 +131,15 @@ class Member(PartiaMember, User):
     
     @property
     def avatar_url(self) -> str:
-        if self._guild_avatar_hash:
-            return ImageBaseUrl + f"guilds/{self.guild_id}/users/{self.id}/avatars/{self._guild_avatar_hash}.png"
+        if self.guild_avatar_url is not None:
+            return self.guild_avatar_url
         return super().avatar_url
+
+    @property
+    def guild_avatar_url(self) -> Optional[str]:
+        if self._guild_avatar_hash:
+            return ImageBaseUrl + f"guilds/{self.guild_id}/users/{self.id}/avatars/{self._guild_avatar_hash}.png?size=512"
+        return None
     
     @property
     def is_owner(self) -> Optional[bool]:
