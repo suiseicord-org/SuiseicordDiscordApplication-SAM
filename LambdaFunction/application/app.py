@@ -7,7 +7,6 @@ from typing import Optional
 
 from application import from_data
 from application.interaction import Interaction
-from application.rds import RDSError
 from application.enums import (
     InteractionType,
     InteractionResponseType,
@@ -128,8 +127,6 @@ def callback(event: dict, context: dict):
                 obj.response()
                 _log.debug("clean()")
                 obj.clean()
-            except RDSError as e:
-                obj.error(str(e))
             except Exception as e:
                 t = traceback.format_exc()
                 _log.critical(t.replace('\n', '\r'))

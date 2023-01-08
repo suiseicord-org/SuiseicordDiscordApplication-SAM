@@ -1,3 +1,2 @@
 pynacl
 requests
-pymysql
