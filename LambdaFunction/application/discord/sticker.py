@@ -37,9 +37,9 @@ class StickerItem:
         if self.format_type == StickerFormatType.png:
             self.content_type: str = 'image/png'
         elif self.format_type == StickerFormatType.apng:
-            self.content_type: str = 'image/apng'
+            self.content_type: str = 'image/png'
         elif self.format_type == StickerFormatType.lottie:
-            self.content_type: str = 'image_lottie'
+            self.content_type: str = 'image/lottie'
         else:
             self.content_type = None
 
@@ -113,7 +113,7 @@ class StickerItem:
 
     @property
     def filename(self) -> str:
-        return f'{self.id}_{self.name}.{self.format_type.file_extension}'
+        return f'stickers_{self.id}.{self.format_type.file_extension}'
 
 class Sticker(StickerItem):
     def __init__(self, payload: StickerPayload) -> None:
