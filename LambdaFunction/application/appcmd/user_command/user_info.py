@@ -99,6 +99,12 @@ class UserInfo(UserCommand):
                 "value" : self.target.joind_at.strftime("%Y/%m/%d %H:%M:%S"),
                 "inline" : False
             })
+            if self.target.premium_since is not None:
+                embed["fields"].append({
+                    "name" : "サーバーブースト開始日時",
+                    "value" : self.target.premium_since.strftime("%Y/%m/%d %H:%M:%S"),
+                    "inline" : False
+                })
             embed["fields"].append({
                 "name" : "所属ロール一覧",
                 "value" : "\n".join(
@@ -107,18 +113,21 @@ class UserInfo(UserCommand):
                 ),
                 "inline" : False
             })
-            if self.target.premium_since is not None:
-                embed["fields"].append({
-                    "name" : "サーバーブースト開始日時",
-                    "value" : self.target.premium_since.strftime("%Y/%m/%d %H:%M:%S"),
-                    "inline" : False
-                })
             if self.target.pending is not None:
                 embed["fields"].append({
                     "name" : "サーバールール同意ステータス",
                     "value" : "未同意" if self.target.pending else "同意済み",
                     "inline" : False
                 })
+            avatar_url_texts: list[str] = []
+            avatar_url_texts.append(f'[ユーザーアバターURL]({self.target.user_avatar_url})')
+            if self.target.guild_avatar_url is not None:
+                avatar_url_texts.append(f'[ギルドアバターURL]({self.target.guild_avatar_url})')
+            embed["fields"].append({
+                "name" : "アイコンURLs",
+                "value" : "\n".join(avatar_url_texts),
+                "inline" : False
+            })
             for role in self.target.roles:
                 if role.color > 0:
                     embed["color"] = role.color
@@ -128,6 +137,11 @@ class UserInfo(UserCommand):
         elif isinstance(self.target, User):
             embed["title"] = "ユーザー情報取得結果"
             embed["color"] = CommandColor.mint.value
+            embed["fields"].append({
+                "name" : "アイコンURLs",
+                "value" : f'[ユーザーアバターURL]({self.target.user_avatar_url})',
+                "inline" : False
+            })
 
         embed["footer"] = {
             "text" : f"commanded by {str(self.commander)}",
