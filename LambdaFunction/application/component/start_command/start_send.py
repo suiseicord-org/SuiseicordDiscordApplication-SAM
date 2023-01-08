@@ -10,8 +10,8 @@ from .start_command import CmpStartCommand
 
 from application.utils import isotimestamp
 from application.commands import (
-    SendCommand as SendCommandName,
-    SendCommandOption as SendCommandOptionName
+    SlashSendCommand as SlashSendCommandName,
+    SlashSendCommandOption as SlashSendCommandOptionName
 )
 from application.components import CustomID
 from application.enums import (
@@ -46,7 +46,7 @@ class CmpStartSend(CmpStartCommand):
         """メッセージ送信"""
         self.deferred_update_message() # loads
         super().run()
-        if self.sub_command == SendCommandName.dm:
+        if self.sub_command == SlashSendCommandName.dm:
             try:
                 self.target = DmChannel(self.target_id)
             except NoDmChannelError as e:
@@ -61,7 +61,7 @@ class CmpStartSend(CmpStartCommand):
         self.attachments: Optional[list[Attachment]] = []
         for key, value in fields.items():
             key: str; value: str
-            if key.startswith(SendCommandOptionName.attachments):
+            if key.startswith(SlashSendCommandOptionName.attachments):
                 self.attachments.append(Attachment(
                     json.loads(value.strip('`json'))
                 ))
@@ -92,7 +92,7 @@ class CmpStartSend(CmpStartCommand):
             "content" : self.embed.get("description")
         }
         # happi announce
-        if self.sub_command == SendCommandName.happi:
+        if self.sub_command == SlashSendCommandName.happi:
             #componentを追加
             payload["components"] = [
                 {
@@ -133,9 +133,9 @@ class CmpStartSend(CmpStartCommand):
                 embeds[0]['image']['url'] = image_url
             remove_index: list[int] = []
             for index, fild in enumerate(embeds[0].get("fields", [])):
-                if fild['name'].startswith(SendCommandOptionName.attachments):
+                if fild['name'].startswith(SlashSendCommandOptionName.attachments):
                     remove_index.append(index)
-                elif fild['name'].startswith("url_" + SendCommandOptionName.attachments):
+                elif fild['name'].startswith("url_" + SlashSendCommandOptionName.attachments):
                     remove_index.append(index)
             remove_index.sort(reverse=True)
             for i in remove_index:
@@ -146,7 +146,7 @@ class CmpStartSend(CmpStartCommand):
             })
             if len(attachments) > 0:
                 embeds[0]["fields"].append({
-                    "name" : 'sent_' + SendCommandOptionName.attachments + '_url',
+                    "name" : 'sent_' + SlashSendCommandOptionName.attachments + '_url',
                     "value" : "\n".join(a.url for a in attachments)
                 })
             # message: Message = Message(payload)

@@ -17,8 +17,8 @@ from application.dynamodb import SettingDynamoDB
 
 from application.commands import (
     SlashCommand as SlashCommandName,
-    BanCommand as BanCommandName,
-    BanCommandOption as BanCommandOptionName
+    SlashBanCommand as SlashBanCommandName,
+    SlashBanCommandOption as SlashBanCommandOptionName
 )
 from application.components import Button, CustomID
 from application.enums import (
@@ -41,18 +41,18 @@ class SlashBan(SlashCommand):
         self.sub_command: dict = self._data['options'][0]
         self.sub_command_name: str = self.sub_command['name']
         self.options: dict = parse_to_dict_value(self.sub_command['options'])
-        self.target_id = self.options[BanCommandOptionName.target]
+        self.target_id = self.options[SlashBanCommandOptionName.target]
         self.ban_permission_check: bool = True
 
     def run(self) -> None:
         # self.deferred_channel_message()
         super().run()
         self.target: Optional[Union[Member, User]] = None
-        if self.sub_command_name == BanCommandName.mention:
+        if self.sub_command_name == SlashBanCommandName.mention:
             member_payload = self.resolved["members"][self.target_id]
             member_payload["user"] = self.resolved["users"][self.target_id]
             self.target = Member(member_payload, self._guild_id)
-        elif self.sub_command_name == BanCommandName.id:
+        elif self.sub_command_name == SlashBanCommandName.id:
             self.target = get_member_or_user(
                 self.target_id,
                 self._guild_id
@@ -71,9 +71,9 @@ class SlashBan(SlashCommand):
             _log.warning("BOT can not ban the target user!")
             return
         
-        self.reason: str = self.options[BanCommandOptionName.reason]
+        self.reason: str = self.options[SlashBanCommandOptionName.reason]
         _log.debug("reason: {}".format(self.reason))
-        self.custom_reason: Optional[str] = self.options.get(BanCommandOptionName.custom_reason)
+        self.custom_reason: Optional[str] = self.options.get(SlashBanCommandOptionName.custom_reason)
         _log.debug("custom_reason: {}".format(self.custom_reason))
 
         # get setting.
@@ -85,10 +85,10 @@ class SlashBan(SlashCommand):
         )
 
         self.delete_message_days: int = self.options.get(
-            BanCommandOptionName.delete_message_days,
+            SlashBanCommandOptionName.delete_message_days,
             int(
                 data.get(
-                    BanCommandOptionName.delete_message_days,
+                    SlashBanCommandOptionName.delete_message_days,
                     1 # default
                 )
             )
@@ -96,36 +96,36 @@ class SlashBan(SlashCommand):
         _log.debug("delete_message_days: {}".format(self.delete_message_days))
         self.accept_count: int = int(
             data.get(
-                BanCommandOptionName.accept_count,
+                SlashBanCommandOptionName.accept_count,
                 1 # default
             )
         )
         _log.debug("accept_count: {}".format(self.accept_count))
         self.cancel_count: int = int(
             data.get(
-                BanCommandOptionName.cancel_count,
+                SlashBanCommandOptionName.cancel_count,
                 1 # default
             )
         )
         _log.debug("cancel_count: {}".format(self.cancel_count))
         _mentions = data.get(
-            BanCommandOptionName.mentions,
+            SlashBanCommandOptionName.mentions,
             set() # default
         )
         self.mentions: set[int] = {int(i) for i in _mentions}
         _log.debug("mentions: {}".format(self.mentions))
 
         self.dm: bool = self.options.get(
-            BanCommandOptionName.dm,
+            SlashBanCommandOptionName.dm,
             data.get(
-                BanCommandOptionName.dm,
+                SlashBanCommandOptionName.dm,
                 False # default
             )
         )
         _log.debug("dm: {}".format(self.dm))
         if self.dm and isinstance(self.target, Member):
             self.dm_text: Optional[str] = data.get(
-                BanCommandOptionName.dm_text
+                SlashBanCommandOptionName.dm_text
             )
             _log.debug("dm_text: {}".format(self.dm_text))
 
@@ -293,7 +293,7 @@ class SlashBan(SlashCommand):
         })
         embed["fields"].append({
             "name" : "{0}: {1} 人".format(
-                BanCommandOptionName.accept_title,
+                SlashBanCommandOptionName.accept_title,
                 self.accept_count
             ),
             "value" : "ボタンを押した人:",
@@ -301,7 +301,7 @@ class SlashBan(SlashCommand):
         })
         embed["fields"].append({
             "name" : "{0}: {1} 人".format(
-                BanCommandOptionName.cancel_title,
+                SlashBanCommandOptionName.cancel_title,
                 self.cancel_count
             ),
             "value" : "ボタンを押した人:",
@@ -399,7 +399,7 @@ class SlashBan(SlashCommand):
             urls: list[str] = []
             for attachment in attachments.values():
                 embed["fields"].append({
-                    "name" : BanCommandOptionName.attachments + f'[{index}]',
+                    "name" : SlashBanCommandOptionName.attachments + f'[{index}]',
                     "value" : "```json\n{}\n```".format(json.dumps(attachment, ensure_ascii=False, indent=4))
                 })
                 urls.append(attachment["url"])
@@ -409,7 +409,7 @@ class SlashBan(SlashCommand):
                     }
                 index += 1
             embed["fields"].append({
-                "name" : "url_" + BanCommandOptionName.attachments,
+                "name" : "url_" + SlashBanCommandOptionName.attachments,
                 "value" : "\n".join(urls)
             })
         

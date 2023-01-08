@@ -2,7 +2,7 @@
 from .command_cancel import CmpCommandCancel
 
 from application.commands import (
-    BanCommandOption as BanCommandOptionName
+    SlashBanCommandOption as SlashBanCommandOptionName
 )
 from application.mytypes.components import (
     Component as ComponentPayload
@@ -32,7 +32,7 @@ class CmpCommandCancelBan(CmpCommandCancel):
     
     def response(self) -> None:
         for field in self.message_data["embeds"][0]["fields"]:
-            if field["name"].startswith(BanCommandOptionName.cancel_title):
+            if field["name"].startswith(SlashBanCommandOptionName.cancel_title):
                 cancel_members_text: str = field["value"]
                 break
         else:
@@ -48,7 +48,7 @@ class CmpCommandCancelBan(CmpCommandCancel):
         else:
             embeds = self.message_data["embeds"]
             for field in embeds[0]["fields"]:
-                if field["name"].startswith(BanCommandOptionName.cancel_title):
+                if field["name"].startswith(SlashBanCommandOptionName.cancel_title):
                     field["value"] += "\n<@{0}> (ID: {0})".format(
                         self.commander.id
                     )

@@ -12,8 +12,8 @@ from application.discord.user import PartiaUser
 
 from application.commands import (
     SlashCommand as SlashCommandName,
-    SendCommand as SendCommandName,
-    SendCommandOption as SendCommandOptionName
+    SlashSendCommand as SlashSendCommandName,
+    SlashSendCommandOption as SlashSendCommandOptionName
 )
 from application.components import Button, CustomID
 from application.enums import (
@@ -37,7 +37,7 @@ class SlashSend(SlashCommand):
         self.sub_command_name: str = self.sub_command['name']
         _targets = get_options(
             self.sub_command['options'],
-            name = SendCommandOptionName.target
+            name = SlashSendCommandOptionName.target
         )
         self.target_id: Snowflake = _targets[0]['value']
         _log.debug("target_id: {}".format(self.target_id))
@@ -111,7 +111,7 @@ class SlashSend(SlashCommand):
         embed: dict = {"title" : "メッセージ送信コマンド"} # set title
         # set target information
         embed["fields"] = []
-        if self.sub_command_name.lower() == SendCommandName.dm:
+        if self.sub_command_name.lower() == SlashSendCommandName.dm:
             user: PartiaUser = PartiaUser(self.resolved["users"].get(self.target_id))
             # member = None if (_member := self.resolved.get("members")) is None else _member.get(self.target_id)
             embed["fields"].append({
@@ -125,7 +125,7 @@ class SlashSend(SlashCommand):
                 "url" : user.avatar_url
             }
             embed["color"] = CommandColor.mint.value
-        elif self.sub_command_name.lower() == SendCommandName.channel:
+        elif self.sub_command_name.lower() == SlashSendCommandName.channel:
             channel: InteractionPartialChannel
             channel = InteractionPartialChannel(self.resolved["channels"][self.target_id])
             embed["fields"].append({
@@ -142,7 +142,7 @@ class SlashSend(SlashCommand):
             #     "value" : "OK" if permission & (1 << 11) else "**NG (修正が必要)**"
             # })
             embed["color"] = CommandColor.marigold.value
-        elif self.sub_command_name.lower() == SendCommandName.happi:
+        elif self.sub_command_name.lower() == SlashSendCommandName.happi:
             channel: InteractionPartialChannel
             channel = InteractionPartialChannel(self.resolved["channels"][self.target_id])
             embed["fields"].append({
@@ -166,7 +166,7 @@ class SlashSend(SlashCommand):
             urls: list[str] = []
             for attachment in attachments.values():
                 embed["fields"].append({
-                    "name" : SendCommandOptionName.attachments + f'[{index}]',
+                    "name" : SlashSendCommandOptionName.attachments + f'[{index}]',
                     "value" : "```json\n{}\n```".format(json.dumps(attachment, ensure_ascii=False, indent=4))
                 })
                 urls.append(attachment["url"])
@@ -176,7 +176,7 @@ class SlashSend(SlashCommand):
                     }
                 index += 1
             embed["fields"].append({
-                "name" : "url_" + SendCommandOptionName.attachments,
+                "name" : "url_" + SlashSendCommandOptionName.attachments,
                 "value" : "\n".join(urls)
             })
         
