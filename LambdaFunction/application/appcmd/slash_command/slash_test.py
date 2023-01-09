@@ -1,16 +1,8 @@
 #!python3.9
-import json
-
 from .slash_command import SlashCommand
-
-from application.dynamodb import SettingDynamoDB
 
 from application.enums import (
     InteractionResponseType,
-    ComponentType,
-    ButtonStyle,
-    CommandColor,
-    SuiseiCordColor
 )
 
 from logging import getLogger

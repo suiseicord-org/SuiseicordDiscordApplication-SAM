@@ -1,5 +1,4 @@
 #!python3.9
-
 from ..role import CmpRole
 
 from logging import getLogger

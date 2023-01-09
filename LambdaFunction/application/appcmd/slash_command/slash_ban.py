@@ -9,26 +9,23 @@ from application.utils import isotimestamp
 from .slash_command import SlashCommand
 
 from application.discord.attachment import Attachment
-from application.discord.channel import InteractionPartialChannel
 from application.discord.member import Member, get_member_or_user
 from application.discord.user import User
 
 from application.dynamodb import SettingDynamoDB
 
 from application.commands import (
-    SlashCommand as SlashCommandName,
     SlashBanCommand as SlashBanCommandName,
     SlashBanCommandOption as SlashBanCommandOptionName
 )
-from application.components import Button, CustomID
+from application.components import CustomID
 from application.enums import (
     InteractionResponseType,
     ComponentType,
     ButtonStyle,
     CommandColor
 )
-from application.interaction import get_options, get_resolved_data, parse_to_dict_value
-from application.mytypes.snowflake import Snowflake
+from application.interaction import parse_to_dict_value
 
 from logging import getLogger
 _log = getLogger(__name__)

@@ -82,4 +82,4 @@ class VSongAward(Form):
             self.entrys[self.song_entrys[i]] = self.song_titles[i]
         n = min(len(self.mv_entrys), len(self.mv_titles))
         for i in range(n):
-            self.entrys[self.mv_entrys[i]] = self.mv_titles[i]    
+            self.entrys[self.mv_entrys[i]] = self.mv_titles[i]

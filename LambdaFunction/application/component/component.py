@@ -1,8 +1,4 @@
 #!python3.9
-from typing import (
-    Optional
-)
-
 from ..interaction import Interaction
 
 from logging import getLogger

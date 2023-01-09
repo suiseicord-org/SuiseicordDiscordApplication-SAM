@@ -1,12 +1,9 @@
 #!python3.9
-
 from application.commands import (
     HappiAnnounceLanguage
 )
 
 from .happi_announce import CmpHappiAnnounce
-from .happi_announce_jp import CmpHappiAnnounceJp
-from .happi_announce_en import CmpHappiAnnounceEn
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -18,7 +15,9 @@ def from_data(rawdata: dict) -> CmpHappiAnnounce:
     _log.debug("lang: {}".format(lang))
     if lang == HappiAnnounceLanguage.jp:
         _log.debug("lang == HappiAnnounceLanguage.jp")
+        from .happi_announce_jp import CmpHappiAnnounceJp
         return CmpHappiAnnounceJp(rawdata)
     elif lang == HappiAnnounceLanguage.en:
         _log.debug("lang == HappiAnnounceLanguage.en")
+        from .happi_announce_en import CmpHappiAnnounceEn
         return CmpHappiAnnounceEn(rawdata)

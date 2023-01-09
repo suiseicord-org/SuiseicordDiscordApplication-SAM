@@ -1,7 +1,6 @@
 #!python3.9
-import os
 from requests import Response
-from typing import Dict, List, Optional, TYPE_CHECKING, Any, Tuple, Union
+from typing import Dict, List, Optional, Any, Tuple, Union
 
 from logging import getLogger
 _log = getLogger(__name__)

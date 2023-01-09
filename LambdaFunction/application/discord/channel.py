@@ -1,10 +1,9 @@
 #!python3.9
-import os, shutil, glob, re
+import os, shutil, re
 import csv, json
-from typing import Any, Optional, Type, TypedDict, Union
+from typing import Optional, TypedDict
 import requests
 from datetime import datetime
-from urllib.parse import urlencode
 
 from application.enums import (
     ChannelType
@@ -17,15 +16,13 @@ from application.mytypes.channel import (
     PermissionOverwrite as PermissionOverwritePayload,
 )
 from application.mytypes.threads import (
-    ThreadMetadata as ThreadMetadataPayload,
     ThreadMember as ThreadMemberPayload
 )
 from application.mytypes.user import (
     User as UserPayload
 )
 from application.mytypes.message import (
-    Message as MessagePayload,
-    Attachment as AttachmentPayload
+    Message as MessagePayload
 )
 
 from .exception import Forbidden

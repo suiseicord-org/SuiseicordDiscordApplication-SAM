@@ -1,5 +1,5 @@
 #!python3.9
-import os, json, sys
+import os, sys
 
 if not __debug__:
     from dotenv import load_dotenv

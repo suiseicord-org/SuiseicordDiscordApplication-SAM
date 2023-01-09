@@ -2,7 +2,6 @@
 from application.commands import SlashThreadCommand as SlashThreadCommandName
 
 from .slash_thread import SlashThread
-from .slash_thread_create import SlashThreadCreate
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -13,4 +12,5 @@ def from_data(rawdata: dict) -> SlashThread:
     _log.debug("sub_command: {0}".format(sub_command))
     if sub_command == SlashThreadCommandName.create:
         _log.debug("sub_command == ThreadCommandName.create")
+        from .slash_thread_create import SlashThreadCreate
         return SlashThreadCreate(rawdata)

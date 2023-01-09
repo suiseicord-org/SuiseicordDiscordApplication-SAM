@@ -1,5 +1,4 @@
 #!Python3.9
-
 from ..textinput import ModalTextInput
 
 from logging import getLogger

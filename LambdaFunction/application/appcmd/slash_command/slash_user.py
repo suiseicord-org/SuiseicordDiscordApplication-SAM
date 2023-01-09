@@ -1,30 +1,25 @@
 #!python3.9
-from typing import Optional, Union
 from requests import Response
 from datetime import datetime
+
+from typing import Optional, Union
 
 from application.utils import isotimestamp
 
 from .slash_command import SlashCommand
 
-from application.discord import ApiBaseUrl
-from application.discord.channel import InteractionPartialChannel
 from application.discord.member import Member, get_member_or_user
 from application.discord.user import User
 
 from application.commands import (
-    SlashCommand as SlashCommandName,
     SlashUserCommand as SlashUserCommandName,
     SlashUserCommandOption as SlashUserCommandOptionName
 )
-from application.components import Button, CustomID
 from application.enums import (
     InteractionResponseType,
-    ComponentType,
-    ButtonStyle,
     CommandColor
 )
-from application.interaction import get_options, get_resolved_data
+from application.interaction import get_options
 from application.mytypes.snowflake import Snowflake
 
 from logging import getLogger
@@ -175,4 +170,3 @@ class SlashUser(SlashCommand):
         }
         embed["timestamp"] = isotimestamp(datetime.now())
         return embed
-

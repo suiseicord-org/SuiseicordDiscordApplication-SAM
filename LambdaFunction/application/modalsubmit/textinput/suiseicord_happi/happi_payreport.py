@@ -1,6 +1,5 @@
 #!python3.9
-
-from requests import Response, patch
+from requests import Response
 from .suiseicord_happi import TextinputSuiseicordHappi
 
 from application.commands import (
@@ -15,10 +14,8 @@ from application.enums import (
     InteractionResponseType,
     SuiseiCordColor
 )
-from application.utils import isotimestamp
 from application.happi_setting import HappiSetting
 from application.discord.channel import Channel
-from application.discord import ApiBaseUrl
 
 from logging import getLogger
 _log = getLogger(__name__)

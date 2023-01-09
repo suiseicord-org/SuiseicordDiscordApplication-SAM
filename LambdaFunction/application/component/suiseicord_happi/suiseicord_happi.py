@@ -12,5 +12,3 @@ class CmpSuiseicordHappi(Component):
     
     def happi_error(self, r: Response):
         pass
-
-

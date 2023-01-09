@@ -1,7 +1,7 @@
 #!python3.9
 from .happi_announce import CmpHappiAnnounce
 
-from application.messages.message import (MessageFile, filepath)
+from application.messages.message import MessageFile, filepath
 from application.happi_setting import HappiSetting
 
 from logging import getLogger

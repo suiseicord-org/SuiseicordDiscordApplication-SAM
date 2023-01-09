@@ -1,11 +1,9 @@
 #!python3.9
-from ..component import Component
-from .command_cancel import CmpCommandCancel
-from .command_cancel_ban import CmpCommandCancelBan
-
 from application.commands import (
     SlashCommand as SlashCommandName
 )
+
+from ..component import Component
 
 from logging import getLogger
 _log = getLogger(__name__)
@@ -17,5 +15,7 @@ def from_data(rawdata: dict) -> Component:
         _log.debug("command: {}".format(command))
         if command == SlashCommandName.ban:
             _log.debug("command == SlashCommandName.ban")
+            from .command_cancel_ban import CmpCommandCancelBan
             return CmpCommandCancelBan(rawdata)
+    from .command_cancel import CmpCommandCancel
     return CmpCommandCancel(rawdata)

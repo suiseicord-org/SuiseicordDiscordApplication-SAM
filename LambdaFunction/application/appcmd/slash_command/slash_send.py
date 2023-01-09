@@ -1,17 +1,16 @@
 #!python3.9
 import json
-from typing import Optional
 from requests import Response
+
+from typing import Optional
 
 from .slash_command import SlashCommand
 
 from application.discord.attachment import Attachment
 from application.discord.channel import InteractionPartialChannel
-from application.discord.member import Member
 from application.discord.user import PartiaUser
 
 from application.commands import (
-    SlashCommand as SlashCommandName,
     SlashSendCommand as SlashSendCommandName,
     SlashSendCommandOption as SlashSendCommandOptionName
 )
@@ -23,7 +22,7 @@ from application.enums import (
     CommandColor,
     SuiseiCordColor
 )
-from application.interaction import get_options, get_resolved_data
+from application.interaction import get_options
 from application.mytypes.snowflake import Snowflake
 
 from logging import getLogger
@@ -181,4 +180,3 @@ class SlashSend(SlashCommand):
             })
         
         return embed
-

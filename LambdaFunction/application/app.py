@@ -2,7 +2,6 @@
 import os
 import json
 import traceback
-import requests
 from typing import Optional
 
 from application import from_data

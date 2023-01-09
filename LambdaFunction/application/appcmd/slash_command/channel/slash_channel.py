@@ -1,5 +1,4 @@
 #!python3.9
-
 from ..slash_command import SlashCommand
 
 from logging import getLogger

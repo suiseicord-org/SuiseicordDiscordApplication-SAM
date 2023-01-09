@@ -1,11 +1,8 @@
 #!python3.9
-
 from application.mytypes.snowflake import Snowflake
 from application.mytypes.role import (
     Role as RolePayload
 )
-
-from application.utils import snowflake_time
 
 class Role:
     def __init__(self, payload: RolePayload, guild_id: Snowflake):

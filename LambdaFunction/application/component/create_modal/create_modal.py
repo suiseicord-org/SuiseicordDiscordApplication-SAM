@@ -1,5 +1,4 @@
 #!python3.9
-
 from ..component import Component
 
 from logging import getLogger

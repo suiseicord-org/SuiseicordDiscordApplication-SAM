@@ -2,8 +2,6 @@
 import os
 import boto3
 
-from typing import Optional
-
 from logging import getLogger
 _log = getLogger(__name__)
 

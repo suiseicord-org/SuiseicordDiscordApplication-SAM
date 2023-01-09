@@ -23,4 +23,3 @@ class SlashCommand(ApplicationCommand):
     def clean(self) -> None:
         super().clean()
         return
-

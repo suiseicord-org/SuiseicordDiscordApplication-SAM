@@ -2,32 +2,16 @@
 import json
 import requests
 from datetime import datetime
-from typing import (
-    Optional
-)
 
 from .start_command import CmpStartCommand
 
 from application.utils import isotimestamp
-from application.commands import (
-    SlashSendCommand as SlashSendCommandName,
-    SlashSendCommandOption as SlashSendCommandOptionName
-)
-from application.components import CustomID
 from application.enums import (
     InteractionResponseType,
-    ButtonStyle,
-    ComponentType,
     CommandColor
 )
-from application.mytypes.message import (
-    Message as MessagePayload
-)
-from application.discord.attachment import Attachment
-from application.discord.channel import Channel, DmChannel, NoDmChannelError
-from application.discord.message import Message
+from application.discord.channel import Channel
 from application.mytypes.snowflake import Snowflake
-from application.mytypes.embed import Embed as EmbedPayload
 
 from logging import getLogger
 _log = getLogger(__name__)

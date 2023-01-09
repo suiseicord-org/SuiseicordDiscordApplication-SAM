@@ -1,6 +1,4 @@
 #!python3.9
-from typing import Optional, Union
-
 from ..application_command import ApplicationCommand
 
 from application.discord.member import Member

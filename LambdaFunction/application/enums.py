@@ -11,9 +11,6 @@ from typing import (
     Type,
     TypeVar,
 )
-from unittest.result import failfast
-
-
 
 def _create_value_cls(name, comparable):
     cls = namedtuple('_EnumValue_' + name, 'name value')

@@ -1,5 +1,4 @@
 #!python
-
 from ..modal_submit import ModalSubmit
 
 from logging import getLogger
@@ -30,4 +29,3 @@ class ModalTextInput(ModalSubmit):
             _data: dict = comp["components"][0]
             result[_data["custom_id"]] = _data["value"]
         return result
-

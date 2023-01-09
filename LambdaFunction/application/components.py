@@ -1,5 +1,4 @@
 #!python3.9
-
 from application.enums import (
     ComponentType,
     ButtonStyle,

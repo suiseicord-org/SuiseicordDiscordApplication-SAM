@@ -14,7 +14,6 @@ _log = getLogger(__name__)
 class CmpHappiPayreportBank(CmpHappiPayreport):
     def __init__(self, rawdata: dict):
         super().__init__(rawdata)
-
     
     def run(self) -> None:
         return super().run()

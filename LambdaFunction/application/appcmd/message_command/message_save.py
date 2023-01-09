@@ -7,14 +7,10 @@ from .message_command import MessageCommand
 from application.dynamodb import SettingDynamoDB
 
 from application.discord.channel import Channel
-from application.discord.file import File
 
 from application.enums import (
     InteractionResponseType,
     MessageFlags
-)
-from application.mytypes.embed import (
-    Embed as EmbedPayload
 )
 
 from logging import getLogger

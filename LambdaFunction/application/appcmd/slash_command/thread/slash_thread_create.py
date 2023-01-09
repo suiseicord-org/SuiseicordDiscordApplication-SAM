@@ -1,5 +1,4 @@
 #!python3.9
-
 from .slash_thread import SlashThread
 
 from logging import getLogger
@@ -20,3 +19,4 @@ class SlashThreadCreate(SlashThread):
     def clean(self) -> None:
         super().clean()
         return
+    

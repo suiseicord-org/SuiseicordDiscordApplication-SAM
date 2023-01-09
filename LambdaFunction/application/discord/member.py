@@ -1,6 +1,6 @@
 #!python3.9
 import datetime
-from typing import Optional, Union
+from typing import Optional
 import requests
 from copy import deepcopy
 
@@ -9,9 +9,6 @@ from application.mytypes.member import (
     MemberWithUser as MemberWithUserPayload
 )
 from application.mytypes.snowflake import Snowflake
-from application.mytypes.user import (
-    User as UserPayload
-)
 from application.utils import parse_time
 from .user import User, PartiaUser
 from .role import Role

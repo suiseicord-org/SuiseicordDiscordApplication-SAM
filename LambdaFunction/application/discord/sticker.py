@@ -8,7 +8,6 @@ from application.enums import (
 )
 
 from . import ImageBaseUrl
-from .attachment import Attachment
 from .user import User
 from .exception import (
     HttpException,
@@ -20,7 +19,6 @@ from application.mytypes.snowflake import Snowflake
 from application.mytypes.sticker import (
     StickerItem as StickerItemPayload,
     Sticker as StickerPayload,
-    StickerFormatType as StickerFormatTypePayload,
     StickerType
 )
 

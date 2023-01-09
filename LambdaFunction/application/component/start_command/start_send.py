@@ -25,9 +25,7 @@ from application.mytypes.message import (
 )
 from application.discord.attachment import Attachment
 from application.discord.channel import Channel, DmChannel, NoDmChannelError
-from application.discord.message import Message
 from application.mytypes.snowflake import Snowflake
-from application.mytypes.embed import Embed as EmbedPayload
 
 from logging import getLogger
 _log = getLogger(__name__)

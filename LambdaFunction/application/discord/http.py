@@ -3,7 +3,6 @@ import os
 import json
 import requests
 from urllib.parse import (
-    urlencode,
     quote as _uriquote
 )
 

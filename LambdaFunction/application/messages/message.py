@@ -1,5 +1,4 @@
 #!python3.9
-
 import os
 
 class MessageFile:

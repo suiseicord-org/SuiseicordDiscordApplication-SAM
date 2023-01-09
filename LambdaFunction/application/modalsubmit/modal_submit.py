@@ -1,5 +1,4 @@
 #!python3.9
-
 from ..interaction import Interaction
 
 from logging import getLogger

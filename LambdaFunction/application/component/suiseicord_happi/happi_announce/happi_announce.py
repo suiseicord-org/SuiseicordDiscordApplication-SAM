@@ -11,10 +11,6 @@ from application.enums import (
     InteractionResponseType,
     MessageFlags
 )
-from application.commands import (
-    Commands as CommandName,
-    HappiCommand as HappiCommandName
-)
 
 from logging import getLogger
 _log = getLogger(__name__)

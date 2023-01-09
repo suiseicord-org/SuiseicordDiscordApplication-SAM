@@ -116,4 +116,3 @@ class SlashChannelTopic(SlashChannel):
             )
         })
         return embed
-

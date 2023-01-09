@@ -1,5 +1,4 @@
 #!python3.9
-
 from ..suiseicord_happi import CmpSuiseicordHappi
 
 from logging import getLogger
@@ -20,6 +19,3 @@ class CmpHappiPayreport(CmpSuiseicordHappi):
     
     def clean(self) -> None:
         return super().clean()
-
-
-        

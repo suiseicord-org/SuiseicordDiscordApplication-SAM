@@ -1,5 +1,4 @@
 #!python3.9
-
 from application.commands import HappiCommand as HappiCommandName
 
 from .suiseicord_happi import CmpSuiseicordHappi

@@ -1,5 +1,4 @@
 #!python3.9
-
 from .vsong_award import VSongAward
 
 class VSongAward2022(VSongAward):

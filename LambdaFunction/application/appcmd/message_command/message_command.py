@@ -30,4 +30,3 @@ class MessageCommand(ApplicationCommand):
     def clean(self) -> None:
         super().clean()
         return
-

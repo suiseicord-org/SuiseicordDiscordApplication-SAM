@@ -8,8 +8,6 @@ from application.enums import (
     TextInputStyle
 )
 
-from application.mytypes.snowflake import Snowflake
-
 from logging import getLogger
 _log = getLogger(__name__)
 

@@ -27,7 +27,7 @@ from .attachment import Attachment
 from .channel import Channel
 from .member import Member, get_member_or_user
 from .reaction import Reaction
-from .sticker import StickerItem, Sticker
+from .sticker import Sticker
 from .user import User
 from .http import Route
 

@@ -1,5 +1,4 @@
 #!python3.9
-#!python3.9
 from application.commands import SlashChannelCommand as SlashChannelCommandName
 
 from .slash_channel import SlashChannel

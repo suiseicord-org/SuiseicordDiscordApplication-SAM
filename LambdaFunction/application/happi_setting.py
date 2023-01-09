@@ -1,5 +1,4 @@
 #!python3.9
-
 from .mytypes.snowflake import Snowflake
 
 class HappiSetting:
