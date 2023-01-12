@@ -19,6 +19,7 @@ class SlashCommand:
     thread  = 'thread'
     channel = 'channel'
     ban     = 'ban'
+    unixtimestamp = 'unixtimestamp'
 
     test    = 'test'
 
