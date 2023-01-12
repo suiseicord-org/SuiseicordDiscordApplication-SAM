@@ -30,7 +30,11 @@ def from_data(rawdata: dict) -> SlashCommand:
         _log.debug("name == SlashCommandName.ban")
         from .slash_ban import SlashBan
         return SlashBan(rawdata)
-    
+    elif name == SlashCommandName.unixtimestamp:
+        _log.debug("name == SlashCommandName.unixtimestamp")
+        from .slash_unixtimestamp import SlashUnixtimestamp
+        return SlashUnixtimestamp(rawdata)
+
     elif name == SlashCommandName.test:
         _log.debug("name == SlashCommandName.test")
         from .slash_test import SlashTest
