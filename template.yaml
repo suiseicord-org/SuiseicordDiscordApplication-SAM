@@ -19,6 +19,28 @@ Parameters:
     Type: String
 
 Resources:
+  # SuiseiCordDiscordApplicationDynamoDB:
+  #   Type: AWS::DynamoDB::Table
+  #   Properties:
+  #     TableName: !Join ["-", [ !Ref ApplicationName, "CommandSetting" ] ]
+  #     AttributeDefinitions: 
+  #       - 
+  #         AttributeName: "name"
+  #         AttributeType: "S"
+  #       - 
+  #         AttributeName: "id"
+  #         AttributeType: "N"
+  #       - 
+  #         AttributeName: "enable"
+  #         AttributeType: "BOOL"
+  #     KeySchema: 
+  #       - 
+  #         AttributeName: "name"
+  #         KeyType: "HASH"
+  #       - 
+  #         AttributeName: "id"
+  #         KeyType: "RANGE"
+  #     BillingMode: PROVISIONED
   SuiseiCordDiscordApplicationCommandsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:

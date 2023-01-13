@@ -1,6 +1,6 @@
 # Discord_SAM 
 
-すいせいこーどで動作するApplication Commandのプログラム。
+すいせいこーど/SuiseiCordで動作するDiscord Application Commandのプログラム。
 
 全てのBOTで共通してこのプログラムコードを使用する。
 
@@ -8,13 +8,14 @@
 
 - ロボ街#5325
 - テスト街#0491
-- 通知街#7275
 
 ## 環境変数
 * `APPLICATION_NAME`
     - `General`
     - `Test`
 * `LOGGING_MODE`
+    - `INFO`
+    - `DEBUG`
 
 ## 実装済みコマンド
 
@@ -37,6 +38,8 @@
         - サーバーメンバーをBANする。
     1. id
         - サーバーの所属に関わらず、ユーザーIDから検索し対象者をBANする。
+1. /unixtimestamp
+    - 指定された日時文字列をdiscord unix timestamp形式に変換するコマンド。
 99. /test
     * テスト用コマンド。
 
