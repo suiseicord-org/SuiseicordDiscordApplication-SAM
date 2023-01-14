@@ -40,6 +40,8 @@
         - サーバーの所属に関わらず、ユーザーIDから検索し対象者をBANする。
 1. /unixtimestamp
     - 指定された日時文字列をdiscord unix timestamp形式に変換するコマンド。
+1. /snowflaketime
+    - DiscordのIDからそのオブジェクトが作られた日時を計算して返すコマンド。
 99. /test
     * テスト用コマンド。
 
