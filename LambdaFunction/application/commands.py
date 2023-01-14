@@ -20,6 +20,7 @@ class SlashCommand:
     channel = 'channel'
     ban     = 'ban'
     unixtimestamp = 'unixtimestamp'
+    snowflaketime = 'snowflaketime'
 
     test    = 'test'
 

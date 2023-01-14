@@ -34,6 +34,10 @@ def from_data(rawdata: dict) -> SlashCommand:
         _log.debug("name == SlashCommandName.unixtimestamp")
         from .slash_unixtimestamp import SlashUnixtimestamp
         return SlashUnixtimestamp(rawdata)
+    elif name == SlashCommandName.snowflaketime:
+        _log.debug("name == SlashCommandName.snowflaketime")
+        from .slash_snowflaketime import SlashSnowflaketime
+        return SlashSnowflaketime(rawdata)
 
     elif name == SlashCommandName.test:
         _log.debug("name == SlashCommandName.test")
